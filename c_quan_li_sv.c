@@ -1,4 +1,3 @@
-// Quản lí sinh viên
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,7 +8,7 @@
 #define MAX_LEN_PASSWORLD 20
 #define MAX_SIZE 100
 #define MAX_CLASS 6
-struct Std
+struct Student
 {
     unsigned long ID;
     char firstName[100]; // Tên
@@ -19,36 +18,36 @@ struct Std
     char sex[5];
     char address[1000];
 };
-typedef struct Std *Student;
+typedef struct Student *STUDENT;
 struct StudentList
 {
     int maxSize;
     int count;
-    Student std;
+    STUDENT std;
 };
-typedef struct StudentList *StudentList;
+typedef struct StudentList *STUDENTLIST;
 struct Class
 {
     int maxClass;
     int count;
     char className[100];
-    StudentList listClass;
+    STUDENTLIST classList;
 };
-typedef struct Class *ClassList;
-StudentList createClass(int size)
+typedef struct Class *CLASSLIST;
+STUDENTLIST createClass(int size)
 {
-    StudentList L = malloc(sizeof(struct StudentList));
+    STUDENTLIST L = malloc(sizeof(struct StudentList));
     L->count = 0;
     L->maxSize = size;
-    L->std = malloc(size * sizeof(struct Std));
+    L->std = malloc(size * sizeof(struct Student));
     return L;
 }
-ClassList createListClass(int size)
+CLASSLIST createListClass(int size)
 {
-    ClassList C = malloc(sizeof(struct Class));
+    CLASSLIST C = malloc(sizeof(struct Class));
     C->count = 0;
     C->maxClass = size;
-    C->listClass = malloc(size * sizeof(StudentList));
+    C->classList = malloc(size * sizeof(STUDENTLIST));
     return C;
 }
 //----------------------------------------------------------------------------------------------
@@ -61,9 +60,9 @@ char *toName(char s[]);
 //----------------------------------------------------------------------------------------------
 void menu();
 int login();
-void addStudent(ClassList classList, StudentList class, Student x);
-void insertStudent(StudentList Class, Student std);
-void insertClass(ClassList classList, StudentList c);
+void addStudent(CLASSLIST classList, STUDENTLIST class, STUDENT x);
+void insertStudent(STUDENTLIST Class, STUDENT std);
+void insertClass(CLASSLIST classList, STUDENTLIST c);
 //----------------------------------------------------------------------------------------------
 int main()
 {
@@ -72,9 +71,9 @@ int main()
     //     return 0;
     // }
     int choice, numberStudent = 0;
-    ClassList classList = createListClass(MAX_CLASS);
-    StudentList Class = createClass(MAX_SIZE);
-    Student std = malloc(sizeof(struct Std));
+    CLASSLIST classList = createListClass(MAX_CLASS);
+    STUDENTLIST Class = createClass(MAX_SIZE);
+    STUDENT std = malloc(sizeof(struct Student));
     printf("------------CHUONG TRINH QUAN LI SINH VIEN------------\n\n");
     do
     {
@@ -125,7 +124,9 @@ char *lTrim(char s[]) // Cắt khoảng trống bên trái
 {
     int i = 0;
     while (s[i] == ' ')
+    {
         i++;
+    }
     if (i > 0)
     {
         strcpy(&s[0], &s[i]);
@@ -162,14 +163,14 @@ char *toName(char s[])
             s[i] = s[i] - 32;
     return s;
 }
-void insertClass(ClassList classList, StudentList Class)
+void insertClass(CLASSLIST classList, STUDENTLIST Class)
 {
     if (classList->count == classList->maxClass)
         exit(1);
-    classList->listClass[classList->count] = *Class;
+    classList->classList[classList->count] = *Class;
     classList->count++;
 }
-void insertStudent(StudentList Class, Student std)
+void insertStudent(STUDENTLIST Class, STUDENT std)
 {
     int current;
     if (Class->count == Class->maxSize)
@@ -177,7 +178,7 @@ void insertStudent(StudentList Class, Student std)
     Class->std[Class->count] = *std;
     Class->count++;
 }
-void addStudent(ClassList classList, StudentList class, Student x)
+void addStudent(CLASSLIST classList, STUDENTLIST class, STUDENT x)
 {
     if (class->count < class->maxSize)
     {
@@ -211,7 +212,7 @@ void addStudent(ClassList classList, StudentList class, Student x)
     else
         printf("Vượt quá giới hạn sinh viên\n");
 }
-void sortStudent(ClassList classList, StudentList class)
+void sortStudent(CLASSLIST classList, STUDENTLIST class)
 {
     for (int i = 0; i < class->count - 1; i++)
     {
