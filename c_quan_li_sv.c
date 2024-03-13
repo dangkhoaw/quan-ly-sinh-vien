@@ -30,11 +30,11 @@ typedef struct StudentList *StudentList;
 struct Class
 {
     int maxClass;
-    int classCount;
+    int count;
     char className[100];
     StudentList listClass;
 };
-typedef struct Class *ListClass;
+typedef struct Class *ClassList;
 StudentList createClass(int size)
 {
     StudentList L = malloc(sizeof(struct StudentList));
@@ -43,10 +43,10 @@ StudentList createClass(int size)
     L->std = malloc(size * sizeof(struct Std));
     return L;
 }
-ListClass createListClass(int size)
+ClassList createListClass(int size)
 {
-    ListClass C = malloc(sizeof(struct Class));
-    C->classCount = 0;
+    ClassList C = malloc(sizeof(struct Class));
+    C->count = 0;
     C->maxClass = size;
     C->listClass = malloc(size * sizeof(StudentList));
     return C;
@@ -58,21 +58,21 @@ char *lTrim(char s[]);
 char *rTrim(char s[]);
 char *trim(char s[]);
 char *toName(char s[]);
-// void reverseStr(char s[]);
-// char *getLastWord(char *s);
 //----------------------------------------------------------------------------------------------
 void menu();
 int login();
-void addStudent(StudentList L, Student x);
+void addStudent(ClassList classList, StudentList class, Student x);
+void insertStudent(StudentList Class, Student std);
+void insertClass(ClassList classList, StudentList c);
 //----------------------------------------------------------------------------------------------
 int main()
 {
-    if (login() == 0)
-    {
-        return 0;
-    }
+    // if (login() == 0)
+    // {
+    //     return 0;
+    // }
     int choice, numberStudent = 0;
-    ListClass listClass = createListClass(MAX_CLASS);
+    ClassList classList = createListClass(MAX_CLASS);
     StudentList Class = createClass(MAX_SIZE);
     Student std = malloc(sizeof(struct Std));
     printf("------------CHUONG TRINH QUAN LI SINH VIEN------------\n\n");
@@ -83,7 +83,7 @@ int main()
         switch (choice)
         {
         case 1:
-            // addStudent(Class, std);
+            addStudent(classList, Class, std);
             break;
         case 2:
             // sortStudent(Class);
@@ -161,6 +161,93 @@ char *toName(char s[])
         if (i == 0 || (i > 0 && s[i - 1] == ' '))
             s[i] = s[i] - 32;
     return s;
+}
+void insertClass(ClassList classList, StudentList Class)
+{
+    if (classList->count == classList->maxClass)
+        exit(1);
+    classList->listClass[classList->count] = *Class;
+    classList->count++;
+}
+void insertStudent(StudentList Class, Student std)
+{
+    int current;
+    if (Class->count == Class->maxSize)
+        exit(1);
+    Class->std[Class->count] = *std;
+    Class->count++;
+}
+void addStudent(ClassList classList, StudentList class, Student x)
+{
+    if (class->count < class->maxSize)
+    {
+        int numStd;
+        printf("Mời bạn nhập vào số sinh viên cần thêm: ");
+        scanf("%d", &numStd);
+        getchar();
+        for (int i = 0; i < numStd; i++)
+        {
+
+            printf("Nhập họ và tên đệm sinh viên thứ %d: ", i + 1);
+            fgets(x->lastName, sizeof(x->lastName), stdin);
+            removeEnter(x->lastName);
+            printf("Nhập tên sinh viên thứ %d: ", i + 1);
+            fgets(x->firstName, sizeof(x->firstName), stdin);
+            removeEnter(x->firstName);
+            printf("Nhập vào ngày sinh: ");
+            fgets(x->birthDay, sizeof(x->birthDay), stdin);
+            removeEnter(x->birthDay);
+            printf("Nhập vào giới tính: ");
+            fgets(x->sex, sizeof(x->sex), stdin);
+            removeEnter(x->sex);
+            printf("Nhập vào địa chỉ: ");
+            fgets(x->address, sizeof(x->address), stdin);
+            removeEnter(x->address);
+            insertClass(classList, class);
+            insertStudent(class, x);
+            printf("\nĐã thêm sinh viên thành công\n");
+        }
+    }
+    else
+        printf("Vượt quá giới hạn sinh viên\n");
+}
+void sortStudent(ClassList classList, StudentList class)
+{
+    for (int i = 0; i < class->count - 1; i++)
+    {
+        for (int j = i + 1; j < class->count; j++)
+        {
+            if (strcmp(class->std[i].firstName, class->std[j].firstName) > 0)
+            {
+                char tmp[100];
+                // Đổi tên
+                strcpy(tmp, class->std[i].firstName);
+                strcpy(class->std[i].firstName, class->std[j].firstName);
+                strcpy(class->std[j].firstName, tmp);
+
+                // Đổi họ
+                strcpy(tmp, class->std[i].lastName);
+                strcpy(class->std[i].lastName, class->std[j].lastName);
+                strcpy(class->std[j].lastName, tmp);
+            }
+            if (strcmp(class->std[i].firstName, class->std[j].firstName) == 0)
+            {
+                if (strcmp(class->std[i].lastName, class->std[j].lastName) > 0)
+                {
+                    char tmp[100];
+                    // Đổi tên
+                    strcpy(tmp, class->std[i].firstName);
+                    strcpy(class->std[i].firstName, class->std[j].firstName);
+                    strcpy(class->std[j].firstName, tmp);
+
+                    // Đổi họ
+                    strcpy(tmp, class->std[i].lastName);
+                    strcpy(class->std[i].lastName, class->std[j].lastName);
+                    strcpy(class->std[j].lastName, tmp);
+                }
+            }
+        }
+    }
 }
 void menu()
 {
