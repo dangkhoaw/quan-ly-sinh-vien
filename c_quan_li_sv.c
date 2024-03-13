@@ -1,4 +1,4 @@
-// CHƯƠNG TRÌNH QUẢN LÍ SINH VIÊN
+// Quản lí sinh viên
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -73,7 +73,7 @@ int main()
     ListClass listClass = createListClass(MAX_CLASS);
     StudentList Class = createClass(MAX_SIZE);
     Student std = malloc(sizeof(struct Std));
-    printf("------------CHƯƠNG TRÌNH QUẢN LÍ SINH VIÊN------------\n\n");
+    printf("------------CHUONG TRINH QUAN LI SINH VIEN------------\n\n");
     do
     {
         menu();
@@ -160,29 +160,6 @@ char *toName(char s[])
             s[i] = s[i] - 32;
     return s;
 }
-// void reverseStr(char s[])
-// {
-//     for (int i = 0; i < strlen(s) / 2; i++)
-//     {
-//         char tmp = s[i];
-//         s[i] = s[strlen(s) - i - 1];
-//         s[strlen(s) - i - 1] = tmp;
-//     }
-// }
-// char *getLastWord(char *s)
-// {
-//     char *tmp = (char *)malloc(strlen(s) + 1); // Cấp phát bộ nhớ cho tmp
-//     int j = 0;
-//     for (int i = strlen(s) - 1; i >= 0; i--)
-//     {
-//         if (s[i] == ' ')
-//             break;
-//         tmp[j++] = s[i];
-//     }
-//     tmp[j] = '\0';
-//     reverseStr(tmp);
-//     return tmp;
-// }
 void menu()
 {
     printf("\n* * * * * * * * * * * * * * * * * * * * * * *\n");
