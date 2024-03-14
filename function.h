@@ -153,7 +153,6 @@ void addStudent(CLASSLIST classList, STUDENTLIST class, STUDENT x)
             printf("Nhập vào địa chỉ: ");
             fgets(x->address, sizeof(x->address), stdin);
             removeEnter(x->address);
-            // insertClass(classList, class);
             insertStudent(class, x);
             printf("\nĐã thêm sinh viên thành công\n");
         }
