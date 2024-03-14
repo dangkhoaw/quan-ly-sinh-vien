@@ -1,3 +1,5 @@
+#ifndef _FUNCTION_H_
+#define _FUNCTION_H_
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -207,3 +209,4 @@ int login()
     printf("\nSai quá nhiều lần. Thoát chương trình\n");
     return 0;
 }
+#endif
