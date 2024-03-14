@@ -164,7 +164,7 @@ void addStudent(CLASSLIST classList, STUDENTLIST class, STUDENT x)
 void menu()
 {
     printf("\n* * * * * * * * * * * * * * * * * * * * * * *\n");
-    printf("*   1. Thêm sinh viên                       *\n");
+    printf("*   1.  Thêm sinh viên                      *\n");
     printf("*   2.  Sắp xếp sinh viên                   *\n");
     printf("*   3.  Xóa sinh viên                       *\n");
     printf("*   4.  Tìm sinh viên                       *\n");
@@ -192,8 +192,23 @@ int login()
         if (strcmp(username, USERNAME) == 0 && strcmp(password, PASSWORD) == 0)
         {
             printf("\nĐăng nhập thành công!");
-            Sleep(2000);
+            Sleep(1000);
             system("cls");
+            for (int i = 0; i < 4; i++)
+            {
+                // printf("Loading...%d%%", i + 1);
+                // Sleep(5);
+                // system("cls");
+                printf("Loading.");
+                Sleep(150);
+                system("cls");
+                printf("Loading..");
+                Sleep(150);
+                system("cls");
+                printf("Loading...");
+                Sleep(150);
+                system("cls");
+            }
             return 1;
         }
         else
