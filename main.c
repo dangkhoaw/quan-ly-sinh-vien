@@ -32,7 +32,7 @@ int main()
         case 7:
             break;
         }
-    } while (choice != 8 && choice < 8);
+    } while (choice != 8);
     free(std);
     return 0;
 }
