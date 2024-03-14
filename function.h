@@ -11,7 +11,7 @@
 #define MAX_LEN_PASSWORLD 20
 #define MAX_SIZE 100
 #define MAX_CLASS 6
-//
+
 struct Student
 {
     unsigned long ID;
