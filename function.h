@@ -12,6 +12,7 @@
 #define MAX_SIZE 100
 #define MAX_CLASS 6
 
+int position = 0;
 struct Student
 {
     unsigned long ID;
@@ -27,17 +28,17 @@ struct StudentList
 {
     int maxSize;
     int count;
-    STUDENT std;
+    char className[100];
+    STUDENT *std;
 };
 typedef struct StudentList *STUDENTLIST;
-struct Class
-{
-    int maxClass;
-    int count;
-    char className[100];
-    STUDENTLIST classList;
-};
-typedef struct Class *CLASSLIST;
+// struct Class
+// {
+//     int maxClass;
+//     int count;
+//     STUDENTLIST *class;
+// };
+// typedef struct Class *CLASSLIST;
 STUDENTLIST createClass(int size)
 {
     STUDENTLIST L = malloc(sizeof(struct StudentList));
@@ -46,14 +47,14 @@ STUDENTLIST createClass(int size)
     L->std = malloc(size * sizeof(struct Student));
     return L;
 }
-CLASSLIST createListClass(int size)
-{
-    CLASSLIST C = malloc(sizeof(struct Class));
-    C->count = 0;
-    C->maxClass = size;
-    C->classList = malloc(size * sizeof(STUDENTLIST));
-    return C;
-}
+// CLASSLIST createListClass(int size)
+// {
+//     CLASSLIST C = malloc(sizeof(struct Class));
+//     C->count = 0;
+//     C->maxClass = size;
+//     C->class = malloc(size * sizeof(STUDENTLIST));
+//     return C;
+// }
 void removeEnter(char s[]) // Do hàm fgets lấy dấu enter nên phải xóa dấu enter ra
 {
     size_t len = strlen(s);
@@ -112,53 +113,114 @@ char *toName(char s[])
             s[i] = s[i] - 32;
     return s;
 }
-void insertClass(CLASSLIST classList, STUDENTLIST Class)
+void insertStudent(STUDENTLIST classList[], STUDENTLIST Class, STUDENT std)
 {
-    if (classList->count == classList->maxClass)
+    if (Class->count >= Class->maxSize)
         exit(1);
-    classList->classList[classList->count] = *Class;
-    classList->count++;
-}
-void insertStudent(STUDENTLIST Class, STUDENT std)
-{
-    int current;
-    if (Class->count == Class->maxSize)
-        exit(1);
-    Class->std[Class->count] = *std;
+    Class->std[Class->count] = std;
     Class->count++;
+    classList[position] = Class;
 }
-void addStudent(CLASSLIST classList, STUDENTLIST class, STUDENT x)
+void addStudent(STUDENTLIST classList[])
 {
-    if (class->count < class->maxSize)
-    {
-        int numStd;
-        printf("Mời bạn nhập vào số sinh viên cần thêm: ");
-        scanf("%d", &numStd);
-        getchar();
-        for (int i = 0; i < numStd; i++)
-        {
+    printf("Mời bạn nhập vào tên lớp: ");
+    char className[100];
+    fgets(className, sizeof(className), stdin);
+    removeEnter(className);
 
-            printf("Nhập họ và tên đệm sinh viên thứ %d: ", i + 1);
-            fgets(x->lastName, sizeof(x->lastName), stdin);
-            removeEnter(x->lastName);
-            printf("Nhập tên sinh viên thứ %d: ", i + 1);
-            fgets(x->firstName, sizeof(x->firstName), stdin);
-            removeEnter(x->firstName);
-            printf("Nhập vào ngày sinh: ");
-            fgets(x->birthDay, sizeof(x->birthDay), stdin);
-            removeEnter(x->birthDay);
-            printf("Nhập vào giới tính: ");
-            fgets(x->sex, sizeof(x->sex), stdin);
-            removeEnter(x->sex);
-            printf("Nhập vào địa chỉ: ");
-            fgets(x->address, sizeof(x->address), stdin);
-            removeEnter(x->address);
-            insertStudent(class, x);
-            printf("\nĐã thêm sinh viên thành công\n");
+    for (int i = 0; i < position; i++)
+    {
+        if (strcmp(classList[i]->className, className) == 0)
+        {
+            printf("Danh sách lớp %s đã có sinh viên.\n", className);
+            return;
         }
     }
-    else
-        printf("Vượt quá giới hạn sinh viên\n");
+    STUDENTLIST class = createClass(MAX_SIZE);
+    if (class == NULL)
+    {
+        printf("Không đủ bộ nhớ để tạo lớp mới.\n");
+        return;
+    }
+
+    strcpy(class->className, className);
+
+    int numStd;
+    printf("Mời bạn nhập vào số sinh viên của lớp %s: ", className);
+    scanf("%d", &numStd);
+    getchar();
+
+    for (int i = 0; i < numStd; i++)
+    {
+        STUDENT newStudent = malloc(sizeof(struct Student));
+        if (newStudent == NULL)
+        {
+            printf("Không đủ bộ nhớ để tạo sinh viên mới.\n");
+            return;
+        }
+
+        printf("Nhập họ và tên đệm sinh viên thứ %d: ", i + 1);
+        fgets(newStudent->lastName, sizeof(newStudent->lastName), stdin);
+        removeEnter(newStudent->lastName);
+
+        printf("Nhập tên sinh viên thứ %d: ", i + 1);
+        fgets(newStudent->firstName, sizeof(newStudent->firstName), stdin);
+        removeEnter(newStudent->firstName);
+
+        printf("Nhập vào ngày sinh: ");
+        fgets(newStudent->birthDay, sizeof(newStudent->birthDay), stdin);
+        removeEnter(newStudent->birthDay);
+
+        printf("Nhập vào giới tính: ");
+        fgets(newStudent->sex, sizeof(newStudent->sex), stdin);
+        removeEnter(newStudent->sex);
+
+        printf("Nhập vào địa chỉ: ");
+        fgets(newStudent->address, sizeof(newStudent->address), stdin);
+        removeEnter(newStudent->address);
+
+        insertStudent(classList, class, newStudent);
+        printf("\nĐã thêm sinh viên thành công\n");
+    }
+    position++;
+}
+void printListStudent(STUDENTLIST classList[], STUDENTLIST Class)
+{
+    if (position == 0)
+    {
+        printf("Chưa có danh sách sinh viên nào\n");
+        return;
+    }
+    printf("Mời bạn nhập vào tên lớp cần in danh sách: ");
+    char className[50];
+    fgets(className, sizeof(className), stdin);
+    removeEnter(className);
+
+    int found = 0;
+    for (int i = 0; i < position; i++)
+    {
+        if (strcmp(classList[i]->className, className) == 0)
+        {
+            found = 1;
+            if (classList[i]->count == 0)
+            {
+                printf("Danh sách không có sinh viên\n");
+                return;
+            }
+            printf("\nDanh sách sinh viên lớp %s:\n", className);
+            printf("STT\tHọ và tên\tNgày sinh\tGiới tính\tĐịa chỉ\n");
+            for (int j = 0; j < classList[i]->count; j++)
+            {
+                printf("%d\t%s %s\t%s\t\t%s\t\t%s\n", j + 1, classList[i]->std[j]->lastName, classList[i]->std[j]->firstName,
+                       classList[i]->std[j]->birthDay, classList[i]->std[j]->sex, classList[i]->std[j]->address);
+            }
+            break;
+        }
+    }
+    if (!found)
+    {
+        printf("Không tìm thấy lớp %s\n", className);
+    }
 }
 void menu()
 {
@@ -195,9 +257,6 @@ int login()
             system("cls");
             for (int i = 0; i < 4; i++)
             {
-                // printf("Loading...%d%%", i + 1);
-                // Sleep(5);
-                // system("cls");
                 printf("Loading.");
                 Sleep(150);
                 system("cls");

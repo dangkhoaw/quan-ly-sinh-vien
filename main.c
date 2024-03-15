@@ -1,12 +1,12 @@
 #include "function.h"
 int main()
 {
-    if (login() == 0)
-    {
-        return 0;
-    }
+    // if (login() == 0)
+    // {
+    //     return 0;
+    // }
     int choice, numberStudent = 0;
-    CLASSLIST classList = createListClass(MAX_CLASS);
+    STUDENTLIST classList[MAX_CLASS];
     STUDENTLIST Class = createClass(MAX_SIZE);
     STUDENT std = malloc(sizeof(struct Student));
     printf("------------CHUONG TRINH QUAN LI SINH VIEN------------\n\n");
@@ -14,10 +14,11 @@ int main()
     {
         menu();
         scanf("%d", &choice);
+        getchar();
         switch (choice)
         {
         case 1:
-            addStudent(classList, Class, std);
+            addStudent(classList);
             break;
         case 2:
             break;
@@ -30,6 +31,7 @@ int main()
         case 6:
             break;
         case 7:
+            printListStudent(classList, Class);
             break;
         }
     } while (choice != 8);
