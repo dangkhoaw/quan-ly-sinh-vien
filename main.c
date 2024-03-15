@@ -37,5 +37,6 @@ int main()
         }
     } while (choice != 8);
     free(std);
+    free(classList);
     return 0;
 }
