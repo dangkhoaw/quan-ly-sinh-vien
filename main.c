@@ -6,7 +6,7 @@ int main()
     //     return 0;
     // }
     int choice, numberStudent = 0;
-    STUDENTLIST classList[MAX_CLASS];
+    STUDENTLIST *classList = malloc(MAX_CLASS * sizeof(struct StudentList));
     STUDENTLIST Class = createClass(MAX_SIZE);
     STUDENT std = malloc(sizeof(struct Student));
     printf("------------CHUONG TRINH QUAN LI SINH VIEN------------\n\n");
@@ -21,6 +21,7 @@ int main()
             addStudent(classList);
             break;
         case 2:
+            sortStudent(classList);
             break;
         case 3:
             break;
