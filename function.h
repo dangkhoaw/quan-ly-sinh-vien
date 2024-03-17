@@ -12,7 +12,7 @@
 #define MAX_SIZE 100
 #define MAX_CLASS 6
 
-int position = 0;
+int position = 0; // danh sách sv
 struct Student
 {
     unsigned long ID;
@@ -126,7 +126,7 @@ void addStudent(STUDENTLIST *classList)
     printf("Mời bạn nhập vào tên lớp: ");
     char className[100];
     fgets(className, sizeof(className), stdin);
-    removeEnter(className);
+    removeEnter(className); // cần nó vì nhấn enter là fget cx lấy dấu và làm ảnh hưởng đên vc sosanh
 
     for (int i = 0; i < position; i++)
     {
@@ -189,7 +189,7 @@ void print(STUDENTLIST *classList, int pos)
 {
     for (int i = 0; i < classList[pos]->count; i++)
     {
-        printf("%d\t%s %s\t%s\t\t%s\t\t%s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
+        printf("%d\t%s %s\t\t\t1%s\t\t%s\t\t%s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
                classList[pos]->std[i]->birthDay, classList[pos]->std[i]->sex, classList[pos]->std[i]->address);
     }
 }
@@ -217,7 +217,7 @@ void printListStudent(STUDENTLIST *classList, STUDENTLIST Class)
                 return;
             }
             printf("\nDanh sách sinh viên lớp %s:\n", className);
-            printf("STT\tHọ và tên\tNgày sinh\tGiới tính\tĐịa chỉ\n");
+            printf("STT\t\t\tHọ và tên\tNgày sinh\tGiới tính\tĐịa chỉ\n");
             print(classList, i);
             break;
         }
@@ -275,12 +275,12 @@ void sortStudent(STUDENTLIST *classList)
             }
             for (int j = 0; j < classList[i]->count - 1; j++)
             {
-                for (int k = 0; k < classList[i]->count - 1 - j; k++)
+                for (int k = j + 1; k < classList[i]->count; k++)
                 {
                     sorted = 1;
-                    if (strcmp(classList[i]->std[k]->lastName, classList[i]->std[j]->lastName) > 0 ||
-                        (strcmp(classList[i]->std[k]->lastName, classList[i]->std[j]->lastName) == 0 &&
-                         strcmp(classList[i]->std[k]->firstName, classList[i]->std[j]->firstName) > 0))
+                    if (strcmp(classList[i]->std[j]->firstName, classList[i]->std[k]->firstName) > 0 ||
+                        (strcmp(classList[i]->std[j]->lastName, classList[i]->std[k]->lastName) > 0 &&
+                         strcmp(classList[i]->std[j]->firstName, classList[i]->std[k]->firstName) == 0))
                     {
                         swapStudent(&classList[i]->std[k], &classList[i]->std[j]);
                     }
