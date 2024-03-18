@@ -1,5 +1,6 @@
 #ifndef _FUNCTION_H_
 #define _FUNCTION_H_
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -12,10 +13,11 @@
 #define MAX_SIZE 100
 #define MAX_CLASS 6
 
-int position = 0; // danh sách sv
+int position = 0;
+
 struct Student
 {
-    unsigned long ID;
+    char ID[10];
     char firstName[100]; // Tên
     char lastName[100];  // Họ
     char email[100];
@@ -32,13 +34,6 @@ struct StudentList
     STUDENT *std;
 };
 typedef struct StudentList *STUDENTLIST;
-// struct Class
-// {
-//     int maxClass;
-//     int count;
-//     STUDENTLIST *class;
-// };
-// typedef struct Class *CLASSLIST;
 STUDENTLIST createClass(int size)
 {
     STUDENTLIST L = malloc(sizeof(struct StudentList));
@@ -47,14 +42,6 @@ STUDENTLIST createClass(int size)
     L->std = malloc(size * sizeof(struct Student));
     return L;
 }
-// CLASSLIST createListClass(int size)
-// {
-//     CLASSLIST C = malloc(sizeof(struct Class));
-//     C->count = 0;
-//     C->maxClass = size;
-//     C->class = malloc(size * sizeof(STUDENTLIST));
-//     return C;
-// }
 void removeEnter(char s[]) // Do hàm fgets lấy dấu enter nên phải xóa dấu enter ra
 {
     size_t len = strlen(s);
@@ -126,7 +113,7 @@ void addStudent(STUDENTLIST *classList)
     printf("Mời bạn nhập vào tên lớp: ");
     char className[100];
     fgets(className, sizeof(className), stdin);
-    removeEnter(className); // cần nó vì nhấn enter là fget cx lấy dấu và làm ảnh hưởng đên vc sosanh
+    removeEnter(className);
 
     for (int i = 0; i < position; i++)
     {
@@ -187,9 +174,10 @@ void addStudent(STUDENTLIST *classList)
 
 void print(STUDENTLIST *classList, int pos)
 {
+    printf("%-5s%-35s%-20s%-20s%-20s%-s\n", "STT", "Họ và tên", "Ngày sinh", "Giới tính", "Địa chỉ");
     for (int i = 0; i < classList[pos]->count; i++)
     {
-        printf("%d\t%s %s\t\t\t1%s\t\t%s\t\t%s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
+        printf("%-5d%-10s%-20s%-20s%-20s%-s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
                classList[pos]->std[i]->birthDay, classList[pos]->std[i]->sex, classList[pos]->std[i]->address);
     }
 }
@@ -217,7 +205,6 @@ void printListStudent(STUDENTLIST *classList, STUDENTLIST Class)
                 return;
             }
             printf("\nDanh sách sinh viên lớp %s:\n", className);
-            printf("STT\t\t\tHọ và tên\tNgày sinh\tGiới tính\tĐịa chỉ\n");
             print(classList, i);
             break;
         }
@@ -229,18 +216,15 @@ void printListStudent(STUDENTLIST *classList, STUDENTLIST Class)
 }
 int isSorted(STUDENTLIST class)
 {
-    for (int i = 1; i < position; i++)
+    for (int i = 1; i < class->count; i++)
     {
-        if (strcmp(class->std[i]->firstName, class->std[i - 1]->firstName) > 0)
+        if (strcmp(class->std[i]->firstName, class->std[i - 1]->firstName) < 0)
         {
             return 0;
         }
-        if (strcmp(class->std[i]->lastName, class->std[i - 1]->lastName) == 0)
+        if (strcmp(class->std[i]->firstName, class->std[i - 1]->firstName) == 0 && strcmp(class->std[i]->lastName, class->std[i - 1]->lastName) < 0)
         {
-            if (strcmp(class->std[i]->lastName, class->std[i - 1]->lastName) > 0)
-            {
-                return 0;
-            }
+            return 0;
         }
     }
     return 1;
@@ -268,7 +252,7 @@ void sortStudent(STUDENTLIST *classList)
     {
         if (strcmp(className, classList[i]->className) == 0)
         {
-            if (isSorted(classList[i]) == 0)
+            if (isSorted(classList[i]))
             {
                 printf("\nLớp %s đã được sắp xếp\n", className);
                 return;
@@ -279,20 +263,21 @@ void sortStudent(STUDENTLIST *classList)
                 {
                     sorted = 1;
                     if (strcmp(classList[i]->std[j]->firstName, classList[i]->std[k]->firstName) > 0 ||
-                        (strcmp(classList[i]->std[j]->lastName, classList[i]->std[k]->lastName) > 0 &&
-                         strcmp(classList[i]->std[j]->firstName, classList[i]->std[k]->firstName) == 0))
+                        (strcmp(classList[i]->std[j]->firstName, classList[i]->std[k]->firstName) == 0 &&
+                         strcmp(classList[i]->std[j]->lastName, classList[i]->std[k]->lastName) > 0))
                     {
                         swapStudent(&classList[i]->std[k], &classList[i]->std[j]);
                     }
                 }
             }
+            break;
         }
         else
-            printf("Không tìm thấy lớp  %s.\n", className);
+            printf("\nKhông tìm thấy lớp  %s\n", className);
     }
     if (sorted == 1)
     {
-        printf("Sắp xếp thành công");
+        printf("\n----Sắp xếp thành công----\n");
     }
 }
 void menu()
