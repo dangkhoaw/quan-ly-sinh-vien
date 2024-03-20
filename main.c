@@ -8,9 +8,9 @@ int main()
     // }
     int choice, numberStudent = 0;
     STUDENTLIST *classList = malloc(MAX_CLASS * sizeof(struct StudentList));
-    STUDENTLIST Class = createClass(MAX_SIZE);
-    STUDENT std = malloc(sizeof(struct Student));
-    printf("------------CHUONG TRINH QUAN LI SINH VIEN------------\n\n");
+    // STUDENTLIST Class = createClass(MAX_SIZE);
+    // STUDENT std = malloc(sizeof(struct Student));
+    printf("------------CHƯƠNG TRÌNH QUẢN LÍ SINH VIÊN------------\n\n");
     do
     {
         menu();
@@ -33,11 +33,11 @@ int main()
         case 6:
             break;
         case 7:
-            printListStudent(classList, Class);
+            printListStudent(classList);
             break;
         }
     } while (choice != 8);
-    free(std);
+    // free(std);
     free(classList);
     return 0;
 }

@@ -15,6 +15,12 @@
 
 int position = 0;
 
+struct Code
+{
+    char faculty[5];
+    char academicYear[5];
+};
+typedef struct Code CODE;
 struct Student
 {
     char ID[10];
@@ -110,6 +116,12 @@ void insertStudent(STUDENTLIST *classList, STUDENTLIST Class, STUDENT std)
 }
 void addStudent(STUDENTLIST *classList)
 {
+    if (position == MAX_CLASS)
+    {
+        printf("Vượt quá giới hạn lớp học\n");
+        return;
+    }
+
     printf("Mời bạn nhập vào tên lớp: ");
     char className[100];
     fgets(className, sizeof(className), stdin);
@@ -149,10 +161,12 @@ void addStudent(STUDENTLIST *classList)
         printf("\nNhập họ và tên đệm sinh viên thứ %d: ", i + 1);
         fgets(newStudent->lastName, sizeof(newStudent->lastName), stdin);
         removeEnter(newStudent->lastName);
+        toName(newStudent->lastName);
 
         printf("\nNhập tên sinh viên thứ %d: ", i + 1);
         fgets(newStudent->firstName, sizeof(newStudent->firstName), stdin);
         removeEnter(newStudent->firstName);
+        toName(newStudent->lastName);
 
         printf("\nNhập vào ngày sinh: ");
         fgets(newStudent->birthDay, sizeof(newStudent->birthDay), stdin);
@@ -172,22 +186,23 @@ void addStudent(STUDENTLIST *classList)
     position++;
 }
 
-void print(STUDENTLIST *classList, int pos)
+void printToFile(STUDENTLIST *classList, FILE *f, int pos)
 {
-    printf("%-5s%-35s%-20s%-20s%-20s%-s\n", "STT", "Họ và tên", "Ngày sinh", "Giới tính", "Địa chỉ");
+    // printf("%-5s%-35s%-20s%-20s%-20s%-s\n", "STT", "Họ và tên", "Ngày sinh", "Giới tính", "Địa chỉ");
     for (int i = 0; i < classList[pos]->count; i++)
     {
-        printf("%-5d%-10s%-20s%-20s%-20s%-s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
-               classList[pos]->std[i]->birthDay, classList[pos]->std[i]->sex, classList[pos]->std[i]->address);
+        fprintf(f, "%-5d%-10s%-20s%-20s%-20s%-s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
+                classList[pos]->std[i]->birthDay, classList[pos]->std[i]->sex, classList[pos]->std[i]->address);
     }
 }
-void printListStudent(STUDENTLIST *classList, STUDENTLIST Class)
+void printListStudent(STUDENTLIST *classList)
 {
     if (position == 0)
     {
         printf("\nChưa có danh sách sinh viên nào\n");
         return;
     }
+
     printf("Mời bạn nhập vào tên lớp cần in danh sách: ");
     char className[50];
     fgets(className, sizeof(className), stdin);
@@ -204,8 +219,22 @@ void printListStudent(STUDENTLIST *classList, STUDENTLIST Class)
                 printf("\nDanh sách không có sinh viên\n");
                 return;
             }
-            printf("\nDanh sách sinh viên lớp %s:\n", className);
-            print(classList, i);
+            FILE *f;
+            char nameFile[100], temp[100] = "Lop_";
+            strcat(temp, className);
+            strcpy(nameFile, strcat(temp, ".txt"));
+            f = fopen(nameFile, "w");
+            if (f == NULL)
+            {
+                printf("Không thể tạo file\n");
+                return;
+            }
+
+            fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", className);
+            printToFile(classList, f, i);
+            printf("\nĐã in danh sách sinh viên\n");
+            printf("Bạn mở file %s để xem danh sách sinh viên của lớp %s\n", nameFile, className);
+            fclose(f);
             break;
         }
     }
@@ -246,12 +275,14 @@ void sortStudent(STUDENTLIST *classList)
     printf("\nMời bạn nhập tên lớp cần sắp xếp: ");
     char className[50];
     int sorted = 0;
+    int found = 0;
     fgets(className, sizeof(className), stdin);
     removeEnter(className);
     for (int i = 0; i < position; i++)
     {
         if (strcmp(className, classList[i]->className) == 0)
         {
+            found = 1;
             if (isSorted(classList[i]))
             {
                 printf("\nLớp %s đã được sắp xếp\n", className);
@@ -270,13 +301,37 @@ void sortStudent(STUDENTLIST *classList)
                     }
                 }
             }
+            break;
         }
-        else
-            printf("\nKhông tìm thấy lớp  %s.\n", className);
     }
-    if (sorted == 1)
+    if (!found)
     {
+        printf("Không tìm thấy lớp %s \n", className);
+        return;
+    }
+
+    if (sorted == 1)
         printf("\n----Sắp xếp thành công----\n");
+}
+void generateID(STUDENTLIST *classList)
+{
+    printf("Mời bạn nhập vào tên lớp cần cấp mã sinh viên: ");
+    char className[100];
+    fgets(className, sizeof(className), stdin);
+    removeEnter(className);
+    for (int i = 0; i < position; i++)
+    {
+        if (strcmp(className, classList[i]->className) == 0)
+        {
+            if (isSorted(classList[i]) == 0)
+            {
+                printf("Cần sắp xếp danh sách lớp %s để cấp mã sinh viên\n", className);
+                return;
+            }
+            printf("Mời bạn nhập mã khoa: ");
+            char facultyCode[10];
+            scanf("%s", &facultyCode);
+        }
     }
 }
 void menu()
