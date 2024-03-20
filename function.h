@@ -20,7 +20,7 @@ struct Code
     char faculty[5];
     char academicYear[5];
 };
-typedef struct Code CODE;
+typedef struct Code *CODE;
 struct Student
 {
     char ID[10];
@@ -180,6 +180,8 @@ void addStudent(STUDENTLIST *classList)
         fgets(newStudent->address, sizeof(newStudent->address), stdin);
         removeEnter(newStudent->address);
 
+        strcpy(newStudent->ID, "");
+
         insertStudent(classList, class, newStudent);
         printf("\n----Đã thêm sinh viên thành công----\n");
     }
@@ -191,8 +193,8 @@ void printToFile(STUDENTLIST *classList, FILE *f, int pos)
     // printf("%-5s%-35s%-20s%-20s%-20s%-s\n", "STT", "Họ và tên", "Ngày sinh", "Giới tính", "Địa chỉ");
     for (int i = 0; i < classList[pos]->count; i++)
     {
-        fprintf(f, "%-5d%-10s%-20s%-20s%-20s%-s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
-                classList[pos]->std[i]->birthDay, classList[pos]->std[i]->sex, classList[pos]->std[i]->address);
+        fprintf(f, "%d%5s%5s%10s%10s%10s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
+                classList[pos]->std[i]->birthDay, classList[pos]->std[i]->ID, classList[pos]->std[i]->email);
     }
 }
 void printListStudent(STUDENTLIST *classList)
@@ -303,9 +305,6 @@ void sortStudent(STUDENTLIST *classList)
             }
             break;
         }
-        else
-            printf("\nKhông tìm thấy lớp  %s\n", className);
-        printf("\nKhông tìm thấy lớp  %s.\n", className);
     }
     if (!found)
     {
@@ -318,24 +317,89 @@ void sortStudent(STUDENTLIST *classList)
 }
 void generateID(STUDENTLIST *classList)
 {
-    printf("Mời bạn nhập vào tên lớp cần cấp mã sinh viên: ");
+    if (position == 0)
+    {
+        printf("\nChưa có danh sách sinh viên nào\n");
+        return;
+    }
+
+    printf("Mời bạn nhập vào tên lớp cần cấp ID: ");
     char className[100];
+    int success = 0, found = 0;
     fgets(className, sizeof(className), stdin);
     removeEnter(className);
     for (int i = 0; i < position; i++)
     {
         if (strcmp(className, classList[i]->className) == 0)
         {
-            if (isSorted(classList[i]) == 0)
+            found = 1;
+            if (isSorted(classList[i]))
             {
-                printf("Cần sắp xếp danh sách lớp %s để cấp mã sinh viên\n", className);
+                printf("Mời bạn nhập vào mã khoa: ");
+                char facultyCode[100];
+                fgets(facultyCode, sizeof(facultyCode), stdin);
+                removeEnter(facultyCode);
+                for (int j = 0; j < classList[i]->count; j++)
+                {
+
+                    success = 1;
+                    char ordinal[5], studentCode[10], academicYear[15] = "23";
+                    strcpy(studentCode, facultyCode);
+                    sprintf(ordinal, "%04d", j + 1);
+                    strcat(academicYear, ordinal);
+                    strcat(studentCode, academicYear);
+                    strcat(classList[i]->std[j]->ID, studentCode);
+                }
+            }
+            else
+            {
+                printf("Lớp chưa được sắp xếp, mời bạn sắp xếp lớp trước\n");
                 return;
             }
-            printf("Mời bạn nhập mã khoa: ");
-            char facultyCode[10];
-            scanf("%s", &facultyCode);
         }
     }
+    if (!found)
+        printf("Không tìm thấy lớp %s\n", className);
+    if (success == 1)
+        printf("\n----Cấp ID thành công----\n");
+}
+void generateEmail(STUDENTLIST *classList)
+{
+    if (position == 0)
+    {
+        printf("\nChưa có danh sách sinh viên nào\n");
+        return;
+    }
+
+    printf("Mời bạn nhập vào tên lớp cần cấp email: ");
+    char className[100];
+    fgets(className, sizeof(className), stdin);
+    int success = 0, found = 0;
+    removeEnter(className);
+    for (int i = 0; i < position; i++)
+    {
+        if (strcmp(className, classList[i]->className) == 0)
+        {
+            found = 1;
+            for (int j = 0; j < classList[i]->count; j++)
+            {
+                if (strcmp(classList[i]->std[j]->ID, "") == 0)
+                {
+                    printf("Lớp chưa được cấp mã sinh viên, mời bạn cấp mã sinh viên trước\n");
+                    return;
+                }
+                success = 1;
+                char email[100];
+                strcpy(email, classList[i]->std[j]->ID);
+                strcat(email, "@sv.dut.udn.vn");
+                strcpy(classList[i]->std[j]->email, email);
+            }
+        }
+    }
+    if (!found)
+        printf("Không tìm thấy lớp %s\n", className);
+    if (success == 1)
+        printf("\n----Cấp email thành công----\n");
 }
 void menu()
 {
