@@ -303,6 +303,9 @@ void sortStudent(STUDENTLIST *classList)
             }
             break;
         }
+        else
+            printf("\nKhông tìm thấy lớp  %s\n", className);
+        printf("\nKhông tìm thấy lớp  %s.\n", className);
     }
     if (!found)
     {

@@ -6,10 +6,12 @@ int main()
     // {
     //     return 0;
     // }
-    int choice, numberStudent = 0;
+    int choice;
     STUDENTLIST *classList = malloc(MAX_CLASS * sizeof(struct StudentList));
     // STUDENTLIST Class = createClass(MAX_SIZE);
     // STUDENT std = malloc(sizeof(struct Student));
+    STUDENTLIST Class = createClass(MAX_SIZE);
+    STUDENT std = malloc(sizeof(struct Student));
     printf("------------CHƯƠNG TRÌNH QUẢN LÍ SINH VIÊN------------\n\n");
     do
     {
