@@ -167,7 +167,7 @@ void addStudent(STUDENTLIST *classList)
         printf("\nNhập tên sinh viên thứ %d: ", i + 1);
         fgets(newStudent->firstName, sizeof(newStudent->firstName), stdin);
         removeEnter(newStudent->firstName);
-        toName(newStudent->lastName);
+        toName(newStudent->firstName);
 
         printf("\nNhập vào ngày sinh: ");
         fgets(newStudent->birthDay, sizeof(newStudent->birthDay), stdin);
@@ -197,7 +197,6 @@ void addStudent(STUDENTLIST *classList)
 
 void printToFile(STUDENTLIST *classList, FILE *f, int pos)
 {
-    // printf("%-5s%-35s%-20s%-20s%-20s%-s\n", "STT", "Họ và tên", "Ngày sinh", "Giới tính", "Địa chỉ");
     for (int i = 0; i < classList[pos]->count; i++)
     {
         fprintf(f, "%d%5s%5s%10s%10s%10s\n", i + 1, classList[pos]->std[i]->lastName, classList[pos]->std[i]->firstName,
@@ -462,6 +461,7 @@ void removeStudent(STUDENTLIST *classList)
 }
 void menuSearch()
 {
+    printf("\n================================");
     printf("\n1. Tìm kiếm theo tên\n");
     printf("2. Tìm kiếm theo ID\n");
     printf("\nMời bạn chọn: ");
@@ -532,7 +532,8 @@ void searchStudent(STUDENTLIST *classList)
         searchStudentByID(classList);
         break;
     default:
-        printf("Chọn 1 hoặc 2\n");
+        printf("\nChọn 1 hoặc 2\n");
+        searchStudent(classList);
         break;
     }
 }
