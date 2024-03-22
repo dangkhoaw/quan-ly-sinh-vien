@@ -13,7 +13,7 @@ int main()
     {
         menu();
         scanf("%d", &choice);
-        getchar();
+        fflush(stdin);
         switch (choice)
         {
         case 1:
@@ -23,8 +23,10 @@ int main()
             sortStudent(classList);
             break;
         case 3:
+            removeStudent(classList);
             break;
         case 4:
+            searchStudent(classList);
             break;
         case 5:
             generateID(classList);
