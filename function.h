@@ -24,8 +24,10 @@ struct Student
     char email[100];
     char birthDay[100];
     char sex[5];
-    char address[1000];
+    char address[200];
 };
+typedef struct Student *STUDENT;
+
 struct StudentList
 {
     int maxSize;
@@ -33,7 +35,6 @@ struct StudentList
     char className[100];
     STUDENT *std;
 };
-typedef struct Student *STUDENT;
 typedef struct StudentList *STUDENTLIST;
 
 STUDENTLIST createClass(int size)
