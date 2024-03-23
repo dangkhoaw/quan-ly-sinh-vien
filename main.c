@@ -2,13 +2,14 @@
 int main()
 {
     SetConsoleOutputCP(65001);
-    // if (login() == 0)
-    // {
-    //     return 0;
-    // }
+    if (login() == 0)
+    {
+        return 0;
+    }
+    enterCode();
     int choice;
     STUDENTLIST *classList = malloc(MAX_CLASS * sizeof(struct StudentList));
-    printf("------------CHƯƠNG TRÌNH QUẢN LÍ SINH VIÊN------------\n\n");
+    printf("\n------------CHƯƠNG TRÌNH QUẢN LÍ SINH VIÊN------------\n\n");
     do
     {
         menu();
