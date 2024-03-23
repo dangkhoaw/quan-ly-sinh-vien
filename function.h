@@ -25,7 +25,7 @@ struct Student
     char firstName[10]; // Tên
     char lastName[25];  // Họ
     char email[25];
-    char birthDay[10];
+    char birthDay[15];
     char sex[5];
     char address[30];
 };
@@ -376,25 +376,30 @@ void addStudent(STUDENTLIST *classList)
             return;
         }
 
+        fflush(stdin);
         printf("\n➡️  Nhập họ và tên lót sinh viên thứ %d: ", i + 1);
         fgets(newStudent->lastName, sizeof(newStudent->lastName), stdin);
         removeEnter(newStudent->lastName);
         toName(newStudent->lastName);
 
+        fflush(stdin);
         printf("\n➡️  Nhập tên sinh viên thứ %d: ", i + 1);
         fgets(newStudent->firstName, sizeof(newStudent->firstName), stdin);
         removeEnter(newStudent->firstName);
         toName(newStudent->firstName);
 
+        fflush(stdin);
         printf("\n➡️  Nhập vào ngày sinh: ");
         fgets(newStudent->birthDay, sizeof(newStudent->birthDay), stdin);
         removeEnter(newStudent->birthDay);
 
+        fflush(stdin);
         printf("\n➡️  Nhập vào giới tính: ");
         fgets(newStudent->sex, sizeof(newStudent->sex), stdin);
         removeEnter(newStudent->sex);
         toName(newStudent->sex);
 
+        fflush(stdin);
         printf("\n➡️  Nhập vào địa chỉ: ");
         fgets(newStudent->address, sizeof(newStudent->address), stdin);
         removeEnter(newStudent->address);
@@ -447,6 +452,8 @@ void sortStudent(STUDENTLIST *classList)
     int found = 0;
     fgets(className, sizeof(className), stdin);
     removeEnter(className);
+    toUpper(className);
+
     for (int i = 0; i < countClass; i++)
     {
         if (strcmp(className, classList[i]->className) == 0)
@@ -543,8 +550,10 @@ void printListStudent(STUDENTLIST *classList)
             }
 
             FILE *f;
-            char nameFile[40];
-            strcpy(nameFile, className);
+            char nameFile[40] = "K";
+            strcat(nameFile, academicYear);
+            strcat(nameFile, "-");
+            strcat(nameFile, className);
             strcat(nameFile, "-");
             strcat(nameFile, classList[i]->facultyName);
             strcat(nameFile, ".txt");
@@ -642,7 +651,7 @@ void generateEmail(STUDENTLIST *classList)
                     return;
                 }
                 success = 1;
-                char email[100];
+                char email[25];
                 strcpy(email, classList[i]->std[j]->ID);
                 strcat(email, "@sv.dut.udn.vn");
                 strcpy(classList[i]->std[j]->email, email);
