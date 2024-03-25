@@ -350,6 +350,7 @@ void addStudent(STUDENTLIST *classList)
     }
 
     strcpy(class->className, className);
+    strcpy(class->fileName, "");
 
     int numStd;
     printf("\n➡️  Mời bạn nhập vào số sinh viên của lớp %s: ", className);
@@ -618,9 +619,12 @@ void generateID(STUDENTLIST *classList)
                     strcat(studentCode, temp);
                     strcat(classList[i]->std[j]->ID, studentCode);
                 }
-                FILE *f = fopen(classList[i]->fileName, "w");
-                printToFile(classList, f, i);
-                fclose(f);
+                if (strcmp(classList[i]->fileName, "") != 0)
+                {
+                    FILE *f = fopen(classList[i]->fileName, "w");
+                    printToFile(classList, f, i);
+                    fclose(f);
+                }
                 break;
             }
             else
@@ -667,9 +671,12 @@ void generateEmail(STUDENTLIST *classList)
                 strcat(email, "@sv.dut.udn.vn");
                 strcpy(classList[i]->std[j]->email, email);
             }
-            FILE *f = fopen(classList[i]->fileName, "w");
-            printToFile(classList, f, i);
-            fclose(f);
+            if (strcmp(classList[i]->fileName, "") != 0)
+            {
+                FILE *f = fopen(classList[i]->fileName, "w");
+                printToFile(classList, f, i);
+                fclose(f);
+            }
             break;
         }
     }
@@ -715,9 +722,12 @@ void removeStudent(STUDENTLIST *classList)
                         classList[i]->std[k] = classList[i]->std[k + 1];
                     }
                     classList[i]->count--;
-                    FILE *f = fopen(classList[i]->fileName, "w");
-                    printToFile(classList, f, i);
-                    fclose(f);
+                    if (strcmp(classList[i]->fileName, "") != 0)
+                    {
+                        FILE *f = fopen(classList[i]->fileName, "w");
+                        printToFile(classList, f, i);
+                        fclose(f);
+                    }
                     break;
                 }
                 else if (choice == 'N' || choice == 'n')
