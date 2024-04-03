@@ -1,8 +1,8 @@
-# PBL1: Quản lí sinh viên
+# PBL1: Quản lí sinh viên 📚
 
-## Description
+## ✒️ Description
 
-Chương trình cho phép quản lý khoản 100 sinh viên/mỗi lớp. Gồm menu sau:
+#### Chương trình cho phép quản lý khoản 100 sinh viên/mỗi lớp. Gồm menu sau:
 
 - Thêm sinh viên.
 
@@ -20,7 +20,7 @@ Chương trình cho phép quản lý khoản 100 sinh viên/mỗi lớp. Gồm m
 
 - Thoát.
 
-## Note
+## 📋 Note
 
 - Chức năng Cấp Mã sinh viên chương trình tự động cấp sau khi sắp xếp danh sách theo thứ tự Alphabe. Nếu chưa sắp xếp chương trình sẽ thông báo sắp xếp trước.
 
@@ -32,7 +32,7 @@ Chương trình cho phép quản lý khoản 100 sinh viên/mỗi lớp. Gồm m
 
 - Để sử dụng chương trình, hãy chạy file `main.c`.
 
-## Member of the project
+## 🧑🏻‍💻 Member of the project
 
 - [Đặng Đăng Khoa](https://www.facebook.com/khoaw.dang/)
 - [Trần Nguyễn Văn Phát](https://www.facebook.com/profile.php?id=100043746661303)
