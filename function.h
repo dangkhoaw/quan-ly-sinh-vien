@@ -8,9 +8,9 @@
 #include <conio.h>
 #include <stdbool.h>
 
-#define MAX_USERNAME_LENGTH 20
+#define MAX_USERNAME_LENGTH 30
 #define MIN_USERNAME_LENGTH 5
-#define MAX_PASSWORD_LENGTH 20
+#define MAX_PASSWORD_LENGTH 30
 #define MIN_PASSWORD_LENGTH 8
 #define MAX_SIZE 100
 #define MAX_CLASS 6
@@ -64,23 +64,17 @@ void removeEnter(char s[]) // Do hàm fgets lấy dấu enter nên phải xóa d
 
 bool isNumber(char c)
 {
-    if (c >= '0' && c <= '9')
-        return true;
-    return false;
+    return c >= '0' && c <= '9';
 }
 
 bool isLower(char c)
 {
-    if (c >= 'a' && c <= 'z')
-        return true;
-    return false;
+    return c >= 'a' && c <= 'z';
 }
 
 bool isUpper(char c)
 {
-    if (c >= 'A' && c <= 'Z')
-        return true;
-    return false;
+    return c >= 'A' && c <= 'Z';
 }
 
 char *toLower(char s[])
@@ -191,8 +185,30 @@ void generateFacultyName()
         strcpy(facultyName, "KH Công nghệ tiên tiến");
 }
 
+void printFacultyName()
+{
+    printf("\n📚 101: Khoa Cơ khí\n");
+    printf("📚 102: Khoa Công nghệ Thông tin\n");
+    printf("📚 103: Khoa Cơ khí Giao thông\n");
+    printf("📚 104: Khoa CN Nhiệt-Điện lạnh\n");
+    printf("📚 105: Khoa Điện\n");
+    printf("📚 106: Khoa Điện tử Viễn Thông\n");
+    printf("📚 107: Khoa Hóa\n");
+    printf("📚 109: Khoa Xây dựng Cầu-Đường\n");
+    printf("📚 110: Khoa Xây dựng Dân dụng - Công nghiệp\n");
+    printf("📚 111: Khoa Xây dựng công trình thủy\n");
+    printf("📚 117: Khoa Môi trường\n");
+    printf("📚 118: Khoa Quản lí dự án\n");
+    printf("📚 121: Khoa Kiến trúc\n");
+    printf("📚 123: Khoa Khoa học Công nghệ tiên tiến\n");
+}
+
 void enterCode()
 {
+    printf("\n➡️  Mời bạn nhập vào mã khóa: ");
+    scanf("%s", academicYear);
+
+    printFacultyName();
     do
     {
         printf("\n➡️  Mời bạn nhập vào mã khoa: ");
@@ -202,9 +218,6 @@ void enterCode()
     } while (checkFacultyCode() == 0);
 
     generateFacultyName();
-
-    printf("\n➡️  Mời bạn nhập vào mã khóa: ");
-    scanf("%s", academicYear);
 }
 
 bool checkClassName(char className[])
@@ -321,26 +334,26 @@ void insertStudent(STUDENTLIST *classList, STUDENTLIST Class, STUDENT std)
 
 void inputStudentInfo(STUDENT student)
 {
-    printf("\n➡️  Nhập họ và tên lót sinh viên: ");
+    printf("\n➡️  Nhập họ và lót: ");
     fgets(student->lastName, sizeof(student->lastName), stdin);
     removeEnter(student->lastName);
     toName(student->lastName);
 
-    printf("\n➡️  Nhập tên sinh viên: ");
+    printf("\n➡️  Nhập tên: ");
     fgets(student->firstName, sizeof(student->firstName), stdin);
     removeEnter(student->firstName);
     toName(student->firstName);
 
-    printf("\n➡️  Nhập vào ngày sinh: ");
+    printf("\n➡️  Nhập ngày sinh: ");
     fgets(student->birthDay, sizeof(student->birthDay), stdin);
     removeEnter(student->birthDay);
 
-    printf("\n➡️  Nhập vào giới tính: ");
+    printf("\n➡️  Nhập giới tính: ");
     fgets(student->sex, sizeof(student->sex), stdin);
     removeEnter(student->sex);
     toName(student->sex);
 
-    printf("\n➡️  Nhập vào địa chỉ: ");
+    printf("\n➡️  Nhập địa chỉ: ");
     fgets(student->address, sizeof(student->address), stdin);
     removeEnter(student->address);
 
@@ -779,9 +792,10 @@ void removeStudent(STUDENTLIST *classList)
 
 void menuSearch()
 {
-    printf("\n================================");
-    printf("\n1. Tìm kiếm theo tên");
-    printf("\n2. Tìm kiếm theo ID");
+    printf("\n┌───────────────────────┐");
+    printf("\n│ 1. Tìm kiếm theo tên  │");
+    printf("\n│ 2. Tìm kiếm theo ID   │");
+    printf("\n└───────────────────────┘");
     printf("\n\nMời bạn chọn: ");
 }
 
@@ -863,16 +877,16 @@ void searchStudent(STUDENTLIST *classList)
 
 void menu()
 {
-    printf("\n* * * * * * * * * * * * * * * * * * * * * * *\n");
-    printf("*   \033[1;34m1.  Thêm sinh viên\033[0m                      *\n");
-    printf("*   \033[1;35m2.  Sắp xếp sinh viên\033[0m                   *\n");
-    printf("*   \033[1;36m3.  Xóa sinh viên\033[0m                       *\n");
-    printf("*   \033[1;33m4.  Tìm sinh viên\033[0m                       *\n");
-    printf("*   \033[1;32m5.  Cấp mã sinh viên\033[0m                    *\n");
-    printf("*   \033[1;31m6.  Cấp email\033[0m                           *\n");
-    printf("*   \033[1;37m7.  In danh sách sinh viên\033[0m              *\n");
-    printf("*   \033[1;30m8.  Thoát\033[0m                               *\n");
-    printf("* * * * * * * * * * * * * * * * * * * * * * *\n");
+    printf("\n┌───────────────────────────────────────────┐\n");
+    printf("│   1.  Thêm sinh viên                      │\n");
+    printf("│   2.  Sắp xếp sinh viên                   │\n");
+    printf("│   3.  Xóa sinh viên                       │\n");
+    printf("│   4.  Tìm sinh viên                       │\n");
+    printf("│   5.  Cấp mã sinh viên                    │\n");
+    printf("│   6.  Cấp email                           │\n");
+    printf("│   7.  In danh sách sinh viên              │\n");
+    printf("│   8.  Thoát                               │\n");
+    printf("└───────────────────────────────────────────┘\n");
     printf("\nMời bạn chọn: ");
 }
 
@@ -978,16 +992,37 @@ void enterPassword(char password[])
     password[i] = '\0';
 }
 
+void readUsernameAndPasswordFromFile(FILE *f, char username[], char password[])
+{
+    char get;
+    int index = 0;
+
+    while ((get = fgetc(f)) != ':' && get != EOF)
+    {
+        username[index++] = get;
+    }
+    username[index] = '\0';
+
+    index = 0;
+    while ((get = fgetc(f)) != '\n' && get != EOF)
+    {
+        password[index++] = get;
+    }
+    password[index] = '\0';
+}
+
 bool isValidUsername(char username[])
 {
     if (strlen(username) < MIN_USERNAME_LENGTH || strlen(username) > MAX_USERNAME_LENGTH)
     {
+        printf("\n⚠️  Username phải có từ %d đến %d ký tự\n\n", MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
         return false;
     }
     for (int i = 0; i < strlen(username); i++)
     {
         if (username[i] == ' ')
         {
+            printf("\n⚠️  Username không được chứa khoảng trắng\n\n");
             return false;
         }
     }
@@ -997,11 +1032,17 @@ bool isValidUsername(char username[])
         printf("Không thể mở file\n");
         return false;
     }
-    char user[25];
-    while (fscanf(f, "%s", user) != EOF)
+    char user[MAX_USERNAME_LENGTH], pass[MAX_PASSWORD_LENGTH];
+    while (1)
     {
+        if (feof(f))
+            break;
+
+        readUsernameAndPasswordFromFile(f, user, pass);
+
         if (strcmp(user, username) == 0)
         {
+            printf("\n⚠️  Username đã tồn tại\n\n");
             fclose(f);
             return false;
         }
@@ -1015,16 +1056,21 @@ bool isValidPassword(char password[])
     bool hasUppercase = false;
     bool hasLowercase = false;
     bool hasNumber = false;
-    bool notSpace = true;
+    bool hasSpace = false;
 
     if (strlen(password) < MIN_PASSWORD_LENGTH || strlen(password) > MAX_PASSWORD_LENGTH)
     {
+        printf("\n\n⚠️  Password phải có ít nhất %d ký tự\n\n", MIN_PASSWORD_LENGTH);
         return false;
     }
 
     for (int i = 0; i < strlen(password); i++)
     {
-        if (isUpper(password[i]))
+        if (password[i] == ' ')
+        {
+            hasSpace = true;
+        }
+        else if (isUpper(password[i]))
         {
             hasUppercase = true;
         }
@@ -1036,13 +1082,29 @@ bool isValidPassword(char password[])
         {
             hasNumber = true;
         }
-        else if (password[i] == ' ')
-        {
-            notSpace = false;
-        }
+    }
+    if (!hasUppercase)
+    {
+        printf("\n\n⚠️  Password phải chứa ít nhất 1 ký tự in hoa\n\n");
+        return false;
+    }
+    if (!hasLowercase)
+    {
+        printf("\n\n⚠️  Password phải chứa ít nhất 1 ký tự thường\n\n");
+        return false;
+    }
+    if (!hasNumber)
+    {
+        printf("\n\n⚠️  Password phải chứa ít nhất 1 số\n\n");
+        return false;
+    }
+    if (hasSpace)
+    {
+        printf("\n\n⚠️  Password không được chứa khoảng trắng\n\n");
+        return false;
     }
 
-    return hasUppercase && hasLowercase && hasNumber && notSpace;
+    return true;
 }
 
 void registerAccount()
@@ -1050,31 +1112,26 @@ void registerAccount()
     system("cls");
     char username[MAX_USERNAME_LENGTH];
     char password[MAX_PASSWORD_LENGTH];
-    char x[50];
     FILE *f = fopen("index.txt", "a");
     printf("\n\t=============== Register Page ===============\n\n");
+
+    printf("\n(Username phải có từ %d đến %d ký tự và không chứa khoảng trắng)", MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
+    printf("\n(Password dài tối thiểu %d kí tự, phải chứa ít nhất 1 ký tự in hoa, 1 ký tự thường, 1 số và không chứa khoảng trắng)\n\n", MIN_PASSWORD_LENGTH);
+
     do
     {
         printf("Username: ");
         fgets(username, sizeof(username), stdin);
         removeEnter(username);
-        if (!isValidUsername(username))
-        {
-            printf("\n⚠️  Username không hợp lệ hoặc đã tồn tại. Hãy thử lại!\n\n");
-        }
     } while (!isValidUsername(username));
-    fprintf(f, "%s\n", username);
+    fprintf(f, "%s:", username);
     do
     {
         printf("Password: ");
         enterPassword(password);
-        if (!isValidPassword(password))
-        {
-            printf("\n⚠️  Password không hợp lệ. Hãy thử lại!\n\n");
-        }
     } while (!isValidPassword(password));
     encryptPassword(password);
-    fprintf(f, "%s\n\n", password);
+    fprintf(f, "%s\n", password);
     fclose(f);
     printf("\n\n👏 Đăng kí thành công!");
     Sleep(500);
@@ -1098,25 +1155,20 @@ bool checkUsername(char USER[], char user[])
 
 bool checkUsernameAndPassword(char user[], char pass[])
 {
+    FILE *f = fopen("index.txt", "r");
     char username[25];
     char password[25];
-    FILE *f = fopen("index.txt", "r");
-    if (f == NULL)
+    while (1)
     {
-        printf("Không thể mở file\n");
-        return false;
-    }
-    while (fscanf(f, "%s", username) != EOF)
-    {
-        if (username[0] == '\0')
-            continue;
-        if (fscanf(f, "%s", password) != EOF)
+        if (feof(f))
+            break;
+
+        readUsernameAndPasswordFromFile(f, username, password);
+
+        if (checkUsername(username, user) && checkPassword(password, pass))
         {
-            if (checkUsername(username, user) && checkPassword(password, pass))
-            {
-                fclose(f);
-                return true;
-            }
+            fclose(f);
+            return true;
         }
     }
     fclose(f);
