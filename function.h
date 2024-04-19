@@ -13,13 +13,14 @@
 #define MAX_PASSWORD_LENGTH 30
 #define MIN_PASSWORD_LENGTH 8
 #define MAX_SIZE 100
-#define MAX_CLASS 6
+#define MAX_CLASS 11
 #define KEY 15
 
 int countClass = 0;
 char facultyCode[10];
 char academicYear[10];
 char facultyName[50];
+int temp = 0;
 
 struct Student
 {
@@ -40,18 +41,12 @@ struct StudentList
     int count;
     char className[10];
     char fileName[50];
+    int studentOrder;
     STUDENT *std;
 };
 typedef struct StudentList *STUDENTLIST;
 
-STUDENTLIST createClass(int maxSize)
-{
-    STUDENTLIST Class = malloc(sizeof(struct StudentList));
-    Class->count = 0;
-    Class->maxSize = maxSize;
-    Class->std = malloc(maxSize * sizeof(struct Student));
-    return Class;
-}
+//------------------------------------------------------------------------------------------------------------------------
 
 void removeEnter(char s[]) // Do hàm fgets lấy dấu enter nên phải xóa dấu enter ra
 {
@@ -140,6 +135,18 @@ char *toName(char s[])
     return s;
 }
 
+//------------------------------------------------------------------------------------------------------------------------
+
+STUDENTLIST createClass(int maxSize)
+{
+    STUDENTLIST Class = malloc(sizeof(struct StudentList));
+    Class->count = 0;
+    Class->studentOrder = 0;
+    Class->maxSize = maxSize;
+    Class->std = malloc(maxSize * sizeof(struct Student));
+    return Class;
+}
+
 bool checkFacultyCode()
 {
     if (strcmp(facultyCode, "101") == 0 || strcmp(facultyCode, "102") == 0 || strcmp(facultyCode, "103") == 0 ||
@@ -185,6 +192,126 @@ void generateFacultyName()
         strcpy(facultyName, "KH Công nghệ tiên tiến");
 }
 
+void printListClassName()
+{
+    if (strcmp(facultyCode, "101") == 0)
+    {
+        printf("\n📚 %sC1A\n", academicYear);
+        printf("📚 %sC1B\n", academicYear);
+        printf("📚 %sC1C\n", academicYear);
+        printf("📚 %sC1D\n", academicYear);
+        printf("📚 %sCDT1\n", academicYear);
+        printf("📚 %sCDT2\n", academicYear);
+        printf("📚 %sCDT3\n", academicYear);
+        printf("📚 %sCDT4\n", academicYear);
+        printf("📚 %sCKHK\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "102") == 0)
+    {
+        printf("\n📚 %sT_DT1\n", academicYear);
+        printf("📚 %sT_DT2\n", academicYear);
+        printf("📚 %sT_DT3\n", academicYear);
+        printf("📚 %sT_DT4\n", academicYear);
+        printf("📚 %sT_KHDL1\n", academicYear);
+        printf("📚 %sT_KHDL2\n", academicYear);
+        printf("📚 %sT_Nhat1\n", academicYear);
+        printf("📚 %sT_Nhat2\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "103") == 0)
+    {
+        printf("\n📚 %sC4A\n", academicYear);
+        printf("📚 %sC4B\n", academicYear);
+        printf("📚 %sC4C\n", academicYear);
+        printf("📚 %sHTCN\n", academicYear);
+        printf("📚 %sKTOTO1\n", academicYear);
+        printf("📚 %sKTOTO2\n", academicYear);
+        printf("📚 %sKTTT\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "104") == 0)
+    {
+        printf("\n📚 %sN1\n", academicYear);
+        printf("📚 %sN2\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "105") == 0)
+    {
+        printf("\n📚 %sD1\n", academicYear);
+        printf("📚 %sD2\n", academicYear);
+        printf("📚 %sD3\n", academicYear);
+        printf("📚 %sD4\n", academicYear);
+        printf("📚 %sD5\n", academicYear);
+        printf("📚 %sTDH1\n", academicYear);
+        printf("📚 %sTDH2\n", academicYear);
+        printf("📚 %sTDH3\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "106") == 0)
+    {
+        printf("\n📚 %sDT1\n", academicYear);
+        printf("📚 %sDT2\n", academicYear);
+        printf("📚 %sDT3\n", academicYear);
+        printf("📚 %sDT4\n", academicYear);
+        printf("📚 %sKTMT1\n", academicYear);
+        printf("📚 %sKTMT2\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "107") == 0)
+    {
+        printf("\n📚 %sH2A\n", academicYear);
+        printf("📚 %sH2B\n", academicYear);
+        printf("📚 %sH2C\n", academicYear);
+        printf("📚 %sH5\n", academicYear);
+        printf("📚 %sKTHH1\n", academicYear);
+        printf("📚 %sKTHH2\n", academicYear);
+        printf("📚 %sSH1\n", academicYear);
+        printf("📚 %sSH2\n", academicYear);
+        printf("📚 %sSHYD\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "109") == 0)
+    {
+        printf("\n📚 %sBIM_AI\n", academicYear);
+        printf("📚 %sCSHT\n", academicYear);
+        printf("📚 %sVLXD\n", academicYear);
+        printf("📚 %sX3\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "110") == 0)
+    {
+        printf("\n📚 %sX1A\n", academicYear);
+        printf("📚 %sX1B\n", academicYear);
+        printf("📚 %sX1C\n", academicYear);
+        printf("📚 %sX1D\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "111") == 0)
+    {
+        printf("\n📚 %sDTTM\n", academicYear);
+        printf("📚 %sTHXD\n", academicYear);
+        printf("📚 %sX2\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "117") == 0)
+    {
+        printf("\n📚 %sMT\n", academicYear);
+        printf("📚 %sQLMT\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "118") == 0)
+    {
+        printf("\n📚 %sKX1\n", academicYear);
+        printf("📚 %sKX2\n", academicYear);
+        printf("📚 %sKX3\n", academicYear);
+        printf("📚 %sQLCN1\n", academicYear);
+        printf("📚 %sQLCN2\n", academicYear);
+        printf("📚 %sQLCN3\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "121") == 0)
+    {
+        printf("\n📚 %sKT1\n", academicYear);
+        printf("📚 %sKT2\n", academicYear);
+    }
+    else if (strcmp(facultyCode, "123") == 0)
+    {
+        printf("\n📚 %sPFIEV1\n", academicYear);
+        printf("\n📚 %sPFIEV2\n", academicYear);
+        printf("\n📚 %sPFIEV3\n", academicYear);
+        printf("📚 %sES\n", academicYear);
+        printf("📚 %sECE\n", academicYear);
+    }
+}
 void printFacultyName()
 {
     printf("\n📚 101: Khoa Cơ khí\n");
@@ -329,7 +456,52 @@ void insertStudent(STUDENTLIST *classList, STUDENTLIST Class, STUDENT std)
         exit(1);
     Class->std[Class->count] = std;
     Class->count++;
+    Class->studentOrder++;
     classList[countClass] = Class;
+}
+
+void printToFile(STUDENTLIST *classList, FILE *f, int position)
+{
+    if (strcmp(classList[position]->std[0]->ID, "") == 0)
+    {
+        fprintf(f, "%-11s %-25s %-17s %-16s %s\n", "STT", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
+        for (int i = 0; i < classList[position]->count; i++)
+        {
+            fprintf(f, " %-5d %-29s %-11s %-15s %s\n", i + 1, classList[position]->std[i]->fullName, classList[position]->std[i]->sex, classList[position]->std[i]->birthDay, classList[position]->std[i]->address);
+        }
+    }
+    else if (strcmp(classList[position]->std[0]->email, "") == 0)
+    {
+        fprintf(f, "%-5s %-23s %-24s %-17s %-16s %s\n", "STT", "Mã sinh viên", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
+        for (int i = 0; i < classList[position]->count; i++)
+        {
+            fprintf(f, " %-5d %-15s %-28s %-11s %-15s %s\n", i + 1, classList[position]->std[i]->ID, classList[position]->std[i]->fullName, classList[position]->std[i]->sex, classList[position]->std[i]->birthDay, classList[position]->std[i]->address);
+        }
+    }
+    else
+    {
+        fprintf(f, "%-5s %-23s %-33s %-21s %-17s %-16s %s\n", "STT", "Mã sinh viên", "Họ và tên", "Email", "Giới tính", "Ngày sinh", "Địa chỉ");
+        for (int i = 0; i < classList[position]->count; i++)
+        {
+            fprintf(f, " %-5d %-15s %-26s %-31s %-12s %-15s %s\n", i + 1, classList[position]->std[i]->ID, classList[position]->std[i]->fullName, classList[position]->std[i]->email, classList[position]->std[i]->sex, classList[position]->std[i]->birthDay, classList[position]->std[i]->address);
+        }
+    }
+}
+
+void printNewStudentToFile(STUDENTLIST *classList, FILE *f, int position, STUDENT newStudent)
+{
+    if (strcmp(classList[position]->std[0]->ID, "") == 0)
+    {
+        fprintf(f, " %-5d %-29s %-11s %-15s %s\n", classList[position]->studentOrder, newStudent->fullName, newStudent->sex, newStudent->birthDay, newStudent->address);
+    }
+    else if (strcmp(classList[position]->std[0]->email, "") == 0)
+    {
+        fprintf(f, " %-5d %-15s %-28s %-11s %-15s %s\n", classList[position]->studentOrder, newStudent->ID, newStudent->fullName, newStudent->sex, newStudent->birthDay, newStudent->address);
+    }
+    else
+    {
+        fprintf(f, " %-5d %-15s %-26s %-31s %-12s %-15s %s\n", classList[position]->studentOrder, newStudent->ID, newStudent->fullName, newStudent->email, newStudent->sex, newStudent->birthDay, newStudent->address);
+    }
 }
 
 void inputStudentInfo(STUDENT student)
@@ -364,6 +536,19 @@ void inputStudentInfo(STUDENT student)
     sprintf(student->fullName, "%s %s", student->lastName, student->firstName);
 }
 
+bool confirmExit()
+{
+    char choice;
+    printf("\n❓ Bạn có muốn thoát không? (Y/N): ");
+    scanf(" %c", &choice);
+    fflush(stdin);
+    if (choice == 'Y' || choice == 'y')
+    {
+        return true;
+    }
+    return false;
+}
+
 void addStudent(STUDENTLIST *classList)
 {
     if (countClass == MAX_CLASS)
@@ -382,6 +567,7 @@ void addStudent(STUDENTLIST *classList)
     char className[15];
     do
     {
+        printListClassName();
         printf("\n➡️  Mời bạn nhập vào tên lớp: ");
         fgets(className, sizeof(className), stdin);
         removeEnter(className);
@@ -396,16 +582,48 @@ void addStudent(STUDENTLIST *classList)
     {
         if (strcmp(classList[i]->className, className) == 0)
         {
-            printf("\n⚠️  Danh sách lớp %s đã có sinh viên.\n", className);
-            return;
+            class = classList[i];
+            FILE *f = fopen(classList[i]->fileName, "a");
+            int numStd;
+            do
+            {
+                printf("\n🔔 Lớp %s đã có %d sinh viên\n", classList[i]->className, classList[i]->count);
+                printf("\n➡️  Nhập số sinh viên muốn thêm: ");
+                scanf("%d", &numStd);
+                if (numStd <= 0 || numStd > MAX_SIZE - classList[i]->count)
+                {
+                    printf("\n⚠️ Số lượng học sinh không hợp lệ ⚠️\n");
+                }
+                fflush(stdin);
+            } while (numStd + classList[i]->count > MAX_SIZE);
+            for (int j = 0; j < numStd; j++)
+            {
+                STUDENT newStudent = malloc(sizeof(struct Student));
+
+                inputStudentInfo(newStudent);
+
+                insertStudent(classList, class, newStudent);
+
+                printNewStudentToFile(classList, f, i, newStudent);
+
+                printf("\n👏 Đã thêm sinh viên thành công\n");
+                if (j == numStd - 1 || confirmExit())
+                {
+                    fclose(f);
+                    return;
+                }
+            }
         }
     }
 
     strcpy(class->className, className);
-    strcpy(class->fileName, "");
+    sprintf(class->fileName, "K%s-%s-%s", academicYear, class->className, facultyName);
+
+    FILE *f = fopen(class->fileName, "w");
+    fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", class->className);
 
     int numStd;
-    printf("\n➡️  Mời bạn nhập vào số sinh viên của lớp %s: ", className);
+    printf("\n➡️  Nhập số sinh viên muốn thêm: ");
     scanf("%d", &numStd);
     fflush(stdin);
 
@@ -418,63 +636,33 @@ void addStudent(STUDENTLIST *classList)
     for (int i = 0; i < numStd; i++)
     {
         STUDENT newStudent = malloc(sizeof(struct Student));
-        if (newStudent == NULL)
-        {
-            printf("\nKhông đủ bộ nhớ để tạo sinh viên mới.\n");
-            return;
-        }
 
         inputStudentInfo(newStudent);
 
         insertStudent(classList, class, newStudent);
         printf("\n👏 Đã thêm sinh viên thành công\n");
+        if (i == numStd - 1 || confirmExit())
+        {
+            printToFile(classList, f, countClass);
+            countClass++;
+            fclose(f);
+            return;
+        }
     }
-    countClass++;
 }
 
 bool isSorted(STUDENTLIST class)
 {
     for (int i = 1; i < class->count; i++)
     {
-        if (strcmp(class->std[i]->firstName, class->std[i - 1]->firstName) < 0)
-        {
-            return false;
-        }
-        if (strcmp(class->std[i]->firstName, class->std[i - 1]->firstName) == 0 && strcmp(class->std[i]->lastName, class->std[i - 1]->lastName) < 0)
+        if (strcmp(class->std[i]->firstName, class->std[i - 1]->firstName) < 0 ||
+            (strcmp(class->std[i]->firstName, class->std[i - 1]->firstName) == 0 &&
+             strcmp(class->std[i]->lastName, class->std[i - 1]->lastName) < 0))
         {
             return false;
         }
     }
     return true;
-}
-
-void printToFile(STUDENTLIST *classList, FILE *f, int position)
-{
-    fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", classList[position]->className);
-    if (strcmp(classList[position]->std[0]->ID, "") == 0)
-    {
-        fprintf(f, "%-11s %-25s %-17s %-16s %s\n", "STT", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
-        for (int i = 0; i < classList[position]->count; i++)
-        {
-            fprintf(f, " %-5d %-29s %-11s %-15s %s\n", i + 1, classList[position]->std[i]->fullName, classList[position]->std[i]->sex, classList[position]->std[i]->birthDay, classList[position]->std[i]->address);
-        }
-    }
-    else if (strcmp(classList[position]->std[0]->email, "") == 0)
-    {
-        fprintf(f, "%-5s %-23s %-24s %-17s %-16s %s\n", "STT", "Mã sinh viên", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
-        for (int i = 0; i < classList[position]->count; i++)
-        {
-            fprintf(f, " %-5d %-15s %-28s %-11s %-15s %s\n", i + 1, classList[position]->std[i]->ID, classList[position]->std[i]->fullName, classList[position]->std[i]->sex, classList[position]->std[i]->birthDay, classList[position]->std[i]->address);
-        }
-    }
-    else
-    {
-        fprintf(f, "%-5s %-23s %-33s %-21s %-17s %-16s %s\n", "STT", "Mã sinh viên", "Họ và tên", "Email", "Giới tính", "Ngày sinh", "Địa chỉ");
-        for (int i = 0; i < classList[position]->count; i++)
-        {
-            fprintf(f, " %-5d %-15s %-26s %-31s %-12s %-15s %s\n", i + 1, classList[position]->std[i]->ID, classList[position]->std[i]->fullName, classList[position]->std[i]->email, classList[position]->std[i]->sex, classList[position]->std[i]->birthDay, classList[position]->std[i]->address);
-        }
-    }
 }
 
 void swapStudent(STUDENT *std1, STUDENT *std2)
@@ -492,7 +680,7 @@ void sortStudent(STUDENTLIST *classList)
         return;
     }
 
-    printf("\n➡️  Mời bạn nhập tên lớp cần sắp xếp: ");
+    printf("\n➡️  Nhập tên lớp cần sắp xếp: ");
     char className[15];
     fgets(className, sizeof(className), stdin);
     removeEnter(className);
@@ -510,10 +698,10 @@ void sortStudent(STUDENTLIST *classList)
             {
                 char fileName[15];
                 printf("\n👏 Sắp xếp thành công\n");
-                sprintf(fileName, "input_%s.txt", classList[i]->className);
-                FILE *f = fopen(fileName, "w");
-                printToFile(classList, f, i);
-                fclose(f);
+                // sprintf(fileName, "input_%s.txt", classList[i]->className);
+                // FILE *f = fopen(fileName, "w");
+                // printToFile(classList, f, i);
+                // fclose(f);
                 return;
             }
 
@@ -531,9 +719,10 @@ void sortStudent(STUDENTLIST *classList)
                 }
             }
 
-            char fileName[15];
-            sprintf(fileName, "input_%s.txt", classList[i]->className);
-            FILE *f = fopen(fileName, "w");
+            // char fileName[15];
+            // sprintf(fileName, "input_%s.txt", classList[i]->className);
+            FILE *f = fopen(classList[i]->fileName, "w");
+            fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", classList[i]->className);
             printToFile(classList, f, i);
             fclose(f);
             break;
@@ -560,7 +749,7 @@ void printListStudent(STUDENTLIST *classList)
         return;
     }
 
-    printf("\n➡️  Mời bạn nhập vào tên lớp cần in danh sách: ");
+    printf("\n➡️  Nhập vào tên lớp cần in danh sách: ");
     char className[15];
     fgets(className, sizeof(className), stdin);
     removeEnter(className);
@@ -573,7 +762,7 @@ void printListStudent(STUDENTLIST *classList)
         {
             if (isSorted(classList[i]) == 0)
             {
-                printf("\n🔔 Bạn cần sắp xếp lớp %s để in danh sách\n", classList[i]->className);
+                printf("\n🔔 Cần sắp xếp lớp %s để in danh sách\n", classList[i]->className);
                 return;
             }
 
@@ -584,10 +773,9 @@ void printListStudent(STUDENTLIST *classList)
                 return;
             }
 
-            // Tạo tên file
-            sprintf(classList[i]->fileName, "K%s-%s-%s", academicYear, classList[i]->className, facultyName);
-
             FILE *f = fopen(classList[i]->fileName, "w");
+            fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", classList[i]->className);
+
             if (f == NULL)
             {
                 printf("🔔 Không thể tạo file\n");
@@ -642,6 +830,7 @@ void generateID(STUDENTLIST *classList)
                 if (strcmp(classList[i]->fileName, "") != 0)
                 {
                     FILE *f = fopen(classList[i]->fileName, "w");
+                    fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", classList[i]->className);
                     if (f == NULL)
                     {
                         printf("🔔 Không thể tạo file\n");
@@ -706,6 +895,7 @@ void generateEmail(STUDENTLIST *classList)
             if (strcmp(classList[i]->fileName, "") != 0)
             {
                 FILE *f = fopen(classList[i]->fileName, "w");
+                fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", classList[i]->className);
                 if (f == NULL)
                 {
                     printf("🔔 Không thể tạo file\n");
@@ -772,6 +962,7 @@ void removeStudent(STUDENTLIST *classList)
                             printf("🔔 Không thể tạo file\n");
                             return;
                         }
+                        fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", classList[i]->className);
                         printToFile(classList, f, i);
                         fclose(f);
                     }
