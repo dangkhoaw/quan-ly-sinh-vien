@@ -14,12 +14,11 @@
 #define MIN_PASSWORD_LENGTH 8
 #define MAX_SIZE 100
 #define MAX_CLASS 11
-#define KEY 15
 #define and &&
 #define or ||
 
-char facultyCode[10];
-char academicYear[10];
+char facultyCode[4];
+char academicYear[3];
 char classList[10][15];
 int numClass = 0;
 
@@ -31,14 +30,13 @@ struct Student
     char lastName[25];  // Họ
     char email[25];
     char birthDay[15];
-    char sex[5];
+    char gender[5];
     char address[30];
 };
 typedef struct Student *STUDENT;
 
 struct StudentList
 {
-    int maxSize;
     int count;
     bool isSorted;
     bool hasID;
@@ -48,12 +46,12 @@ typedef struct StudentList *STUDENTLIST;
 
 //------------------------------------------------------------------------------------------------------------------------
 
-void removeEnter(char s[]) // Do hàm fgets lấy dấu enter nên phải xóa dấu enter ra
+void removeEnter(char string[]) // Do hàm fgets lấy dấu enter nên phải xóa dấu enter ra
 {
-    size_t len = strlen(s);
-    if (s[len - 1] == '\n')
+    size_t len = strlen(string);
+    if (string[len - 1] == '\n')
     {
-        s[len - 1] = '\0';
+        string[len - 1] = '\0';
     }
 }
 
@@ -72,77 +70,76 @@ bool isUpper(char c) // Kiểm tra kí tự hoa
     return c >= 'A' and c <= 'Z';
 }
 
-char *toLower(char s[]) // Chuyển thành chuỗi in thường
+char *toLower(char string[]) // Chuyển thành chuỗi in thường
 {
-    for (int i = 0; i < strlen(s); i++)
-        if (s[i] >= 65 and s[i] <= 90)
-            s[i] += 32;
-    return s;
+    for (int i = 0; i < strlen(string); i++)
+        if (string[i] >= 65 and string[i] <= 90)
+            string[i] += 32;
+    return string;
 }
 
-char *toUpper(char s[]) // Chuyển thành chuỗi in hoa
+char *toUpper(char string[]) // Chuyển thành chuỗi in hoa
 {
-    for (int i = 0; i < strlen(s); i++)
-        if (s[i] >= 97 and s[i] <= 122)
-            s[i] -= 32;
-    return s;
+    for (int i = 0; i < strlen(string); i++)
+        if (string[i] >= 97 and string[i] <= 122)
+            string[i] -= 32;
+    return string;
 }
 
-char *lTrim(char s[]) // Cắt khoảng trống bên trái
+char *lTrim(char string[]) // Cắt khoảng trống bên trái
 {
     int i = 0;
-    while (s[i] == ' ')
+    while (string[i] == ' ')
     {
         i++;
     }
     if (i > 0)
     {
-        strcpy(&s[0], &s[i]);
+        strcpy(&string[0], &string[i]);
     }
-    return s;
+    return string;
 }
 
-char *rTrim(char s[]) // Cắt khoảng trống bên phải
+char *rTrim(char string[]) // Cắt khoảng trống bên phải
 {
-    int i = strlen(s) - 1;
-    while (s[i] == ' ')
+    int i = strlen(string) - 1;
+    while (string[i] == ' ')
     {
         i--;
     }
-    s[i + 1] = '\0';
-    return s;
+    string[i + 1] = '\0';
+    return string;
 }
 
-char *trim(char s[]) // Cắt khoảng trống 2 đầu
+char *trim(char string[]) // Cắt khoảng trống 2 đầu
 {
-    rTrim(lTrim(s));
-    char *ptr = strstr(s, "  ");
-    while (ptr != NULL)
+    rTrim(lTrim(string));
+    char *doubleSpace = strstr(string, "  ");
+    while (doubleSpace != NULL)
     {
-        strcpy(ptr, ptr + 1); // Xóa 1 dấu cách
-        ptr = strstr(s, "  ");
+        strcpy(doubleSpace, doubleSpace + 1); // Xóa 1 dấu cách
+        doubleSpace = strstr(string, "  ");
     }
-    return s;
+    return string;
 }
 
-char *toName(char s[]) // Chuyển chuỗi thành tên
+char *toName(char string[]) // Chuyển chuỗi thành tên
 {
-    trim(s);
-    toLower(s);
-    for (int i = 0; i < strlen(s); i++)
-        if (i == 0 or (i > 0 and s[i - 1] == ' '))
-            s[i] = s[i] - 32;
-    return s;
+    trim(string);
+    toLower(string);
+    for (int i = 0; i < strlen(string); i++)
+        if (i == 0 or (i > 0 and string[i - 1] == ' '))
+            string[i] = string[i] - 32;
+    return string;
 }
 
 //------------------------------------------------------------------------------------------------------------------------
 
-STUDENTLIST createClass(int maxSize) // Tạo danh sách sinh viên
+STUDENTLIST createClass() // Tạo danh sách sinh viên
 {
     STUDENTLIST Class = malloc(sizeof(struct StudentList));
     Class->count = 0;
-    Class->maxSize = maxSize;
-    Class->std = malloc(maxSize * sizeof(struct Student));
+    Class->std = malloc(MAX_SIZE * sizeof(struct Student));
     return Class;
 }
 
@@ -160,7 +157,7 @@ bool checkFacultyCode() // Kiểm tra mã khoa
     return false;
 }
 
-void countClass() // Đếm số lớp
+void getTotalClasses() // Đếm số lớp
 {
     if (strcmp(facultyCode, "101") == 0)
     {
@@ -311,7 +308,7 @@ void countClass() // Đếm số lớp
 
 void printListClassName() // In tên các lớp
 {
-    countClass();
+    getTotalClasses();
     if (strcmp(facultyCode, "101") == 0)
     {
         printf("\n");
@@ -444,7 +441,7 @@ void printFacultyName() // In tên khoa
     printf("📚 123: Khoa Khoa học Công nghệ tiên tiến\n");
 }
 
-void enterCode() // Nhập mã khóa và mã khoa
+void inputCode() // Nhập mã khóa và mã khoa
 {
     printf("\n➡️  Mời bạn nhập vào mã khóa: ");
     scanf("%s", academicYear);
@@ -563,20 +560,22 @@ bool checkClassName(char className[]) // Kiểm tra tên lớp
 
 void insertStudent(STUDENTLIST Class, STUDENT std) // Thêm sinh viên vào danh sách
 {
-    if (Class->count >= Class->maxSize)
-        exit(1);
-    Class->std[Class->count] = std;
-    Class->count++;
+    if (Class->count >= MAX_SIZE)
+    {
+        printf("\n🔔 Lớp này đã đủ sinh viên\n");
+        return;
+    }
+    Class->std[Class->count++] = std;
 }
 
-void printToFile(STUDENTLIST class, FILE *f) // In danh sách sinh viên ra file
+void printClassToFile(STUDENTLIST class, FILE *f) // In danh sách sinh viên ra file
 {
     if (strcmp(class->std[0]->ID, "") == 0)
     {
         fprintf(f, "%-11s %-25s %-17s %-16s %s\n", "STT", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
         for (int i = 0; i < class->count; i++)
         {
-            fprintf(f, " %-5d %-29s %-11s %-15s %s\n", i + 1, class->std[i]->fullName, class->std[i]->sex, class->std[i]->birthDay, class->std[i]->address);
+            fprintf(f, " %-5d %-29s %-11s %-15s %s\n", i + 1, class->std[i]->fullName, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
         }
     }
     else if (strcmp(class->std[0]->email, "") == 0)
@@ -584,7 +583,7 @@ void printToFile(STUDENTLIST class, FILE *f) // In danh sách sinh viên ra file
         fprintf(f, "%-5s %-23s %-24s %-17s %-16s %s\n", "STT", "Mã sinh viên", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
         for (int i = 0; i < class->count; i++)
         {
-            fprintf(f, " %-5d %-15s %-28s %-11s %-15s %s\n", i + 1, class->std[i]->ID, class->std[i]->fullName, class->std[i]->sex, class->std[i]->birthDay, class->std[i]->address);
+            fprintf(f, " %-5d %-15s %-28s %-11s %-15s %s\n", i + 1, class->std[i]->ID, class->std[i]->fullName, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
         }
     }
     else
@@ -592,17 +591,17 @@ void printToFile(STUDENTLIST class, FILE *f) // In danh sách sinh viên ra file
         fprintf(f, "%-5s %-23s %-33s %-21s %-17s %-16s %s\n", "STT", "Mã sinh viên", "Họ và tên", "Email", "Giới tính", "Ngày sinh", "Địa chỉ");
         for (int i = 0; i < class->count; i++)
         {
-            fprintf(f, " %-5d %-15s %-26s %-31s %-12s %-15s %s\n", i + 1, class->std[i]->ID, class->std[i]->fullName, class->std[i]->email, class->std[i]->sex, class->std[i]->birthDay, class->std[i]->address);
+            fprintf(f, " %-5d %-15s %-26s %-31s %-12s %-15s %s\n", i + 1, class->std[i]->ID, class->std[i]->fullName, class->std[i]->email, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
         }
     }
 }
 
 void printNewStudentToFile(FILE *f, STUDENT newStudent) // Thêm sinh viên mới vào file
 {
-    fprintf(f, "%s:%s:%s:%s:%s:%s:%s\n", newStudent->ID, newStudent->lastName, newStudent->firstName, newStudent->email, newStudent->sex, newStudent->birthDay, newStudent->address);
+    fprintf(f, "%s:%s:%s:%s:%s:%s:%s\n", newStudent->ID, newStudent->lastName, newStudent->firstName, newStudent->email, newStudent->gender, newStudent->birthDay, newStudent->address);
 }
 
-void inputStudentInfo(STUDENT student) // Nhập thông tin sinh viên
+void getStudentInfo(STUDENT student) // Nhập thông tin sinh viên
 {
     printf("\n➡️  Nhập họ và lót: ");
     fgets(student->lastName, sizeof(student->lastName), stdin);
@@ -619,9 +618,9 @@ void inputStudentInfo(STUDENT student) // Nhập thông tin sinh viên
     removeEnter(student->birthDay);
 
     printf("\n➡️  Nhập giới tính: ");
-    fgets(student->sex, sizeof(student->sex), stdin);
-    removeEnter(student->sex);
-    toName(student->sex);
+    fgets(student->gender, sizeof(student->gender), stdin);
+    removeEnter(student->gender);
+    toName(student->gender);
 
     printf("\n➡️  Nhập địa chỉ: ");
     fgets(student->address, sizeof(student->address), stdin);
@@ -682,9 +681,9 @@ void readStudentInfoFromFile(FILE *f, STUDENTLIST class) // Đọc thông tin si
         index = 0;
         while ((get = fgetc(f)) != ':' and get != EOF)
         {
-            newStudent->sex[index++] = get;
+            newStudent->gender[index++] = get;
         }
-        newStudent->sex[index] = '\0';
+        newStudent->gender[index] = '\0';
         index = 0;
         while ((get = fgetc(f)) != ':' and get != EOF)
         {
@@ -699,7 +698,7 @@ void readStudentInfoFromFile(FILE *f, STUDENTLIST class) // Đọc thông tin si
         newStudent->address[index] = '\0';
         // Do dòng cuối file là 1 dòng trống nên nó sẽ đoc ra 1 sinh viên rỗng
         if (newStudent->ID[0] == '\0' and newStudent->lastName[0] == '\0' and newStudent->firstName[0] == '\0' and
-            newStudent->email[0] == '\0' and newStudent->sex[0] == '\0' and newStudent->birthDay[0] == '\0' and newStudent->address[0] == '\0')
+            newStudent->email[0] == '\0' and newStudent->gender[0] == '\0' and newStudent->birthDay[0] == '\0' and newStudent->address[0] == '\0')
         {
             break;
         }
@@ -760,7 +759,7 @@ void addStudent() // Thêm sinh viên
         {
             STUDENT newStudent = malloc(sizeof(struct Student));
 
-            inputStudentInfo(newStudent);
+            getStudentInfo(newStudent);
 
             printNewStudentToFile(f, newStudent);
             printf("\n👏 Đã thêm sinh viên thành công\n");
@@ -779,7 +778,7 @@ void addStudent() // Thêm sinh viên
         {
             STUDENT newStudent = malloc(sizeof(struct Student));
 
-            inputStudentInfo(newStudent);
+            getStudentInfo(newStudent);
 
             printNewStudentToFile(fileCheck, newStudent);
             printf("\n👏 Đã thêm sinh viên thành công\n");
@@ -792,11 +791,11 @@ void addStudent() // Thêm sinh viên
     }
 }
 
-void swapStudent(STUDENT *std1, STUDENT *std2) // Đổi chỗ 2 sinh viên
+void swapStudent(STUDENT *student1, STUDENT *student2) // Đổi chỗ 2 sinh viên
 {
-    STUDENT tmp = *std1;
-    *std1 = *std2;
-    *std2 = tmp;
+    STUDENT tempStudent = *student1;
+    *student1 = *student2;
+    *student2 = tempStudent;
 }
 
 void sortStudent() // Sắp xếp sinh viên
@@ -891,7 +890,7 @@ void printListStudent() // In danh sách sinh viên
         FILE *f = fopen(fileName, "w");
         // In danh sách sinh viên ra file
         fprintf(f, "Danh sách sinh viên của lớp %s:\n\n", className);
-        printToFile(class, f);
+        printClassToFile(class, f);
         printf("\n👏 Đã in danh sách sinh viên của lớp %s\n", className);
         fclose(f);
     }
@@ -899,9 +898,9 @@ void printListStudent() // In danh sách sinh viên
 
 void generateID() // Cấp mã sinh viên
 {
-    int count;
+    int numStudentHasID;
     char fileID[20];
-    sprintf(fileID, ".id_%s.txt", facultyCode);
+    sprintf(fileID, ".id_%s_%s.txt", facultyCode, academicYear);
     FILE *f = fopen(fileID, "r");
     if (f == NULL)
     {
@@ -910,7 +909,7 @@ void generateID() // Cấp mã sinh viên
         fclose(f);
         FILE *f = fopen(fileID, "r");
     }
-    fscanf(f, "%d", &count);
+    fscanf(f, "%d", &numStudentHasID);
     fclose(f);
 
     char className[15];
@@ -951,10 +950,10 @@ void generateID() // Cấp mã sinh viên
         {
             if (strcmp(class->std[i]->ID, "") == 0)
             {
-                sprintf(class->std[i]->ID, "%s%s%04d", facultyCode, academicYear, ++count);
+                sprintf(class->std[i]->ID, "%s%s%04d", facultyCode, academicYear, ++numStudentHasID);
             }
         }
-        fprintf(f, "%d", count);
+        fprintf(f, "%d", numStudentHasID);
         fclose(f);
         FILE *file = fopen(fileName, "w");
         for (int i = 0; i < class->count; i++)
@@ -1004,9 +1003,8 @@ void generateEmail() // Cấp email
                 sprintf(class->std[i]->email, "%s@sv.dut.udn.vn", class->std[i]->ID);
 
         for (int i = 0; i < class->count; i++)
-        {
             printNewStudentToFile(f, class->std[i]);
-        }
+
         printf("\n🔔 Đã cấp email cho lớp %s\n", className);
         fclose(f);
     }
@@ -1021,14 +1019,14 @@ void removeStudent() // Xóa sinh viên
     removeEnter(ID);
 
     int found = 0;
-    countClass();
+    getTotalClasses();
     for (int i = 0; i < numClass; i++) // Duyệt qua từng lớp
     {
         char fileName[50];
         sprintf(fileName, "%s-%s.txt", facultyCode, classList[i]);
         FILE *f = fopen(fileName, "r");
 
-        if (f == NULL) // Nếu mở file ko thành công
+        if (f == NULL) // Mở file ko thành công
             fclose(f);
         else
         {
@@ -1069,7 +1067,7 @@ void removeStudent() // Xóa sinh viên
         printf("\n🔔 Không tìm thấy sinh viên có ID %s\n", ID);
 }
 
-void menuSearch() // Menu tìm kiếm
+void searchMenu() // Menu tìm kiếm
 {
     printf("\n┌───────────────────────┐");
     printf("\n│ 1. Tìm kiếm theo tên  │");
@@ -1088,13 +1086,13 @@ void searchStudentByName() // Tìm kiếm sinh viên theo tên
     toName(name);
 
     int found = 0;
-    countClass();                      // Đếm số lớp
+    getTotalClasses();
     for (int i = 0; i < numClass; i++) // Duyệt qua từng lớp
     {
         char fileName[50];
         sprintf(fileName, "%s-%s.txt", facultyCode, classList[i]);
         FILE *f = fopen(fileName, "r");
-        if (f != NULL) // Nếu mở file thành công
+        if (f != NULL) // Mở file thành công
         {
             STUDENTLIST class = createClass(MAX_SIZE);
             readStudentInfoFromFile(f, class);
@@ -1124,7 +1122,7 @@ void searchStudentByID() // Tìm kiếm sinh viên theo ID
     removeEnter(ID);
 
     int found = 0;
-    countClass();                      // Đếm số lớp
+    getTotalClasses();                 // Đếm số lớp
     for (int i = 0; i < numClass; i++) // Duyệt qua từng lớp
     {
         char fileName[50];
@@ -1154,7 +1152,7 @@ void searchStudentByID() // Tìm kiếm sinh viên theo ID
 
 void searchStudent() // Tìm kiếm sinh viên
 {
-    menuSearch();
+    searchMenu();
     int choice;
     scanf("%d", &choice);
     switch (choice)
@@ -1202,63 +1200,32 @@ void loading() // Loading
     }
 }
 
-char encodeNumber(char c) // Mã hóa số
+void encrypt(char string[]) // Mã hóa thành chuỗi hex
 {
-    char encryptedNumber[] = {'5', '2', '3', '6', '9', '8', '7', '4', '1', '0'};
-    return encryptedNumber[c - '0'];
-}
-
-char decodeNumber(char c) // Giải mã số
-{
-    char encryptedNumber[] = {'5', '2', '3', '6', '9', '8', '7', '4', '1', '0'};
-    for (int i = 0; i < 10; i++)
+    char *hex = malloc(strlen(string) * 2 + 1);
+    for (int i = 0; i < strlen(string); i++)
     {
-        if (c == encryptedNumber[i])
-        {
-            return i + '0';
-        }
+        sprintf(&hex[i * 2], "%02x", string[i]);
     }
+    strcpy(string, hex);
 }
 
-void encryptPassword(char password[]) // Mã hóa password
+void decrypt(char string[]) // Giải mã
 {
-    for (int i = 0; i < strlen(password); i++)
+    // 1 byte = 2 hex
+    /*"%2hhx" :     2:Đọc đúng 2 ký tự từ chuỗi đầu vào
+                    hh: Chỉ định rằng giá trị đọc được sẽ được chuyển đổi thành một unsigned char
+                    x: Chỉ định rằng giá trị đọc được là một số hệ thập lục phân.*/
+
+    char *byte = malloc(strlen(string) / 2 + 1);
+    for (int i = 0; i < strlen(string); i += 2)
     {
-        if (password[i] >= 'a' and password[i] <= 'z')
-        {
-            password[i] = (password[i] - 'a' + KEY) % 26 + 'a';
-        }
-        else if (password[i] >= 'A' and password[i] <= 'Z')
-        {
-            password[i] = (password[i] - 'A' + KEY) % 26 + 'A';
-        }
-        else if (password[i] >= '0' and password[i] <= '9')
-        {
-            password[i] = encodeNumber(password[i]);
-        }
+        sscanf(&string[i], "%2hhx", &byte[i / 2]);
     }
+    strcpy(string, byte);
 }
 
-void decryptPassword(char password[]) // Giải mã password
-{
-    for (int i = 0; i < strlen(password); i++)
-    {
-        if (password[i] >= 'a' and password[i] <= 'z')
-        {
-            password[i] = (password[i] - 'a' - KEY + 26) % 26 + 'a';
-        }
-        else if (password[i] >= 'A' and password[i] <= 'Z')
-        {
-            password[i] = (password[i] - 'A' - KEY + 26) % 26 + 'A';
-        }
-        else if (password[i] >= '0' and password[i] <= '9')
-        {
-            password[i] = decodeNumber(password[i]);
-        }
-    }
-}
-
-void enterPassword(char password[]) // Nhập password
+void inputPassword(char password[]) // Nhập password
 {
     int i = 0;
     char get;
@@ -1266,9 +1233,7 @@ void enterPassword(char password[]) // Nhập password
     {
         get = getch();
         if (get == '\r' or get == '\n')
-        {
             break;
-        }
         else if (get == '\b')
         {
             if (i > 0)
@@ -1277,9 +1242,7 @@ void enterPassword(char password[]) // Nhập password
                 i--;
             }
             else
-            {
                 printf(" \b");
-            }
         }
         else
         {
@@ -1405,7 +1368,7 @@ bool isValidPassword(char password[]) // Kiểm tra password có hợp lệ hay 
     return true;
 }
 
-void registerAccount() // Đăng kí tài khoản
+void registerNewAccount() // Đăng kí tài khoản
 {
     system("cls");
     char username[MAX_USERNAME_LENGTH];
@@ -1426,9 +1389,9 @@ void registerAccount() // Đăng kí tài khoản
     do
     {
         printf("Password: ");
-        enterPassword(password);
+        inputPassword(password);
     } while (!isValidPassword(password));
-    encryptPassword(password);
+    encrypt(password);
     fprintf(f, "%s\n", password);
     fclose(f);
     printf("\n\n👏 Đăng kí thành công!");
@@ -1436,22 +1399,22 @@ void registerAccount() // Đăng kí tài khoản
     loading();
 }
 
-bool checkPassword(char pass[], char inputPass[]) // Kiểm tra password có đúng hay không
+bool checkPassword(char password[], char userInputPass[]) // Kiểm tra password có đúng hay không
 {
-    decryptPassword(pass);
-    if (strcmp(pass, inputPass) == 0)
+    decrypt(password);
+    if (strcmp(password, userInputPass) == 0)
         return true;
     return false;
 }
 
-bool checkUsername(char USER[], char user[]) // Kiểm tra username có đúng hay không
+bool checkUsername(char userName[], char usernameInput[]) // Kiểm tra username có đúng hay không
 {
-    if (strcmp(USER, user) == 0)
+    if (strcmp(userName, usernameInput) == 0)
         return true;
     return false;
 }
 
-bool checkUsernameAndPassword(char user[], char pass[]) // Đọc từ file và kiểm tra username và password
+bool checkUsernameAndPassword(char inputUsername[], char inputPassword[]) // Đọc từ file và kiểm tra username và password
 {
     FILE *f = fopen("index.txt", "r");
     char username[25];
@@ -1463,7 +1426,7 @@ bool checkUsernameAndPassword(char user[], char pass[]) // Đọc từ file và 
 
         readUsernameAndPasswordFromFile(f, username, password);
 
-        if (checkUsername(username, user) and checkPassword(password, pass))
+        if (checkUsername(username, inputUsername) and checkPassword(password, inputPassword))
         {
             fclose(f);
             return true;
@@ -1483,10 +1446,10 @@ bool login() // Đăng nhập
     while (true)
     {
         printf("Username : ");
-        fgets(username, MAX_USERNAME_LENGTH, stdin);
+        fgets(username, sizeof(username), stdin);
         removeEnter(username);
         printf("Password : ");
-        enterPassword(password);
+        inputPassword(password);
         if (checkUsernameAndPassword(username, password))
         {
             printf("\n\n👏 Đăng nhập thành công!");
@@ -1510,7 +1473,7 @@ bool login() // Đăng nhập
 
 void runProgram() // Chương trình chính
 {
-    enterCode();
+    inputCode();
     int choice;
     printf("\n------------CHƯƠNG TRÌNH QUẢN LÍ SINH VIÊN------------\n\n");
     do
@@ -1540,6 +1503,11 @@ void runProgram() // Chương trình chính
             break;
         case 7:
             printListStudent();
+            break;
+        case 8:
+            break;
+        default:
+            printf("\n⚠️  Vui lòng chọn từ 1 đến 8\n");
             break;
         }
     } while (choice != 8);
