@@ -19,7 +19,7 @@ int main()
     }
     else if (choice == 'N' || choice == 'n')
     {
-        registerAccount();
+        registerNewAccount();
         if (login())
         {
             runProgram();
