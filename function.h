@@ -798,6 +798,25 @@ void swapStudent(STUDENT *student1, STUDENT *student2) // Đổi chỗ 2 sinh vi
     *student2 = tempStudent;
 }
 
+void quickSort(STUDENTLIST class, int start, int end)
+{
+    if (start < end)
+    {
+        int i = start - 1;
+        for (int j = start; j < end; j++)
+        {
+            if (strcmp(class->std[j]->firstName, class->std[end]->firstName) < 0 or
+                (strcmp(class->std[j]->firstName, class->std[end]->firstName) == 0 and strcmp(class->std[j]->lastName, class->std[end]->lastName) < 0))
+            {
+                swapStudent(&class->std[++i], &class->std[j]);
+            }
+        }
+        swapStudent(&class->std[++i], &class->std[end]);
+        quickSort(class, start, i - 1);
+        quickSort(class, i + 1, end);
+    }
+}
+
 void sortStudent() // Sắp xếp sinh viên
 {
     printListClassName();
@@ -828,18 +847,7 @@ void sortStudent() // Sắp xếp sinh viên
             printf("\n🔔 Lớp %s đã được sắp xếp\n", className);
             return;
         }
-        for (int i = 0; i < class->count - 1; i++)
-        {
-            for (int j = i + 1; j < class->count; j++)
-            {
-                if (strcmp(class->std[i]->firstName, class->std[j]->firstName) > 0 or
-                    (strcmp(class->std[i]->firstName, class->std[j]->firstName) == 0 and
-                     strcmp(class->std[i]->lastName, class->std[j]->lastName) > 0))
-                {
-                    swapStudent(&class->std[i], &class->std[j]);
-                }
-            }
-        }
+        quickSort(class, 0, class->count - 1);
         FILE *f = fopen(fileName, "w");
         for (int i = 0; i < class->count; i++)
         {
@@ -1461,10 +1469,10 @@ bool login() // Đăng nhập
         else
         {
             checkLogin++;
-            if (checkLogin < 3)
+            if (checkLogin < 5)
                 printf("\n\n⚠️  Sai Username hoặc Password. Hãy thử lại!\n\n");
         }
-        if (checkLogin == 3)
+        if (checkLogin == 5)
             break;
     }
     printf("\n\n🚫 Sai quá nhiều lần. Thoát chương trình\n");
@@ -1505,13 +1513,13 @@ void runProgram() // Chương trình chính
             printListStudent();
             break;
         case 8:
+            printf("\n👋  Hẹn gặp lại");
             break;
         default:
             printf("\n⚠️  Vui lòng chọn từ 1 đến 8\n");
             break;
         }
     } while (choice != 8);
-    printf("\n👋  Hẹn gặp lại\n");
 }
 
 #endif
