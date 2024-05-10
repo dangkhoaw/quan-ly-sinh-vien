@@ -69,7 +69,7 @@ typedef struct StudentList *STUDENTLIST;
 
 //------------------------------------------------------------------------------------------------------------------------
 
-void removeEnter(char string[]) // Do hàm fgets lấy dấu enter nên phải xóa dấu enter ra
+void removeEnter(char *string) // Do hàm fgets lấy dấu enter nên phải xóa dấu enter ra
 {
     size_t len = strlen(string);
     if (string[len - 1] == '\n')
@@ -93,7 +93,7 @@ bool isUpper(char c) // Kiểm tra kí tự hoa
     return c >= 'A' and c <= 'Z';
 }
 
-char *toLower(char string[]) // Chuyển thành chuỗi in thường
+char *toLower(char *string) // Chuyển thành chuỗi in thường
 {
     for (int i = 0; i < strlen(string); i++)
         if (string[i] >= 65 and string[i] <= 90)
@@ -101,7 +101,7 @@ char *toLower(char string[]) // Chuyển thành chuỗi in thường
     return string;
 }
 
-char *toUpper(char string[]) // Chuyển thành chuỗi in hoa
+char *toUpper(char *string) // Chuyển thành chuỗi in hoa
 {
     for (int i = 0; i < strlen(string); i++)
         if (string[i] >= 97 and string[i] <= 122)
@@ -109,7 +109,7 @@ char *toUpper(char string[]) // Chuyển thành chuỗi in hoa
     return string;
 }
 
-char *lTrim(char string[]) // Cắt khoảng trống bên trái
+char *lTrim(char *string) // Cắt khoảng trống bên trái
 {
     int i = 0;
     while (string[i] == ' ')
@@ -123,7 +123,7 @@ char *lTrim(char string[]) // Cắt khoảng trống bên trái
     return string;
 }
 
-char *rTrim(char string[]) // Cắt khoảng trống bên phải
+char *rTrim(char *string) // Cắt khoảng trống bên phải
 {
     int i = strlen(string) - 1;
     while (string[i] == ' ')
@@ -134,7 +134,7 @@ char *rTrim(char string[]) // Cắt khoảng trống bên phải
     return string;
 }
 
-char *trim(char string[]) // Cắt khoảng trống dư thừa ở giữa và hai đầu
+char *trim(char *string) // Cắt khoảng trống dư thừa ở giữa và hai đầu
 {
     rTrim(lTrim(string));
     char *doubleSpace = strstr(string, "  ");
@@ -146,7 +146,7 @@ char *trim(char string[]) // Cắt khoảng trống dư thừa ở giữa và ha
     return string;
 }
 
-char *toName(char string[]) // Chuyển chuỗi thành tên
+char *toName(char *string) // Chuyển chuỗi thành tên
 {
     trim(string);
     toLower(string);
@@ -432,7 +432,7 @@ void inputCode() // Nhập mã khóa và mã khoa
     } while (checkFacultyCode() == 0);
 }
 
-bool checkClassName(char className[]) // Kiểm tra tên lớp
+bool checkClassName(char *className) // Kiểm tra tên lớp
 {
     if (strcmp(facultyCode, "101") == 0) // Khoa Cơ khí
     {
@@ -603,6 +603,7 @@ void getStudentInfo(STUDENT student) // Nhập thông tin sinh viên
     printf("\n➡️  Nhập địa chỉ: ");
     fgets(student->address, sizeof(student->address), stdin);
     removeEnter(student->address);
+    toName(student->address);
 
     strcpy(student->ID, "");
 
@@ -1193,32 +1194,46 @@ void loading() // Loading
     }
 }
 
-void encrypt(char string[]) // Mã hóa thành chuỗi hex
+void encrypt(char *string) // Mã hóa thành base64
 {
-    char *hex = malloc(strlen(string) * 2 + 1);
-    for (int i = 0; i < strlen(string); i++)
+    int length = strlen(string);
+    char *base64 = malloc(length * 2);
+    char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    int i = 0;
+    int j = 0;
+    while (i < length)
     {
-        sprintf(&hex[i * 2], "%02x", string[i]);
+        base64[j++] = base64_table[(string[i] & 0xFC) >> 2];                                                                                   // 0xFC = 11111100 = 252 lấy ra 6 bit đầu
+        base64[j++] = base64_table[((string[i] & 0x03) << 4) | ((i + 1 < length ? string[i + 1] & 0xF0 : 0) >> 4)];                            // 0x03 = 00000011 = 3 lấy ra 2 bit cuối | 0xF0 = 11110000 = 240 lấy ra 4 bit đầu
+        base64[j++] = i + 1 < length ? base64_table[((string[i + 1] & 0x0F) << 2) | ((i + 2 < length ? string[i + 2] & 0xC0 : 0) >> 6)] : '='; // 0x0F = 00001111 = 15 lấy ra 4 bit cuối | 0xC0 = 11000000 = 192 lấy ra 2 bit đầu
+        base64[j++] = i + 2 < length ? base64_table[string[i + 2] & 0x3F] : '=';                                                               // 0x3F = 00111111 = 63 lấy ra 6 bit cuối
+        i += 3;
     }
-    strcpy(string, hex);
+    base64[j] = '\0';
+    strcpy(string, base64);
 }
 
-void decrypt(char string[]) // Giải mã
+void decrypt(char *string) // Giải mã
 {
-    // 1 byte = 2 hex
-    /*"%2hhx" :     2:Đọc đúng 2 ký tự từ chuỗi đầu vào
-                    hh: Chỉ định rằng giá trị đọc được sẽ được chuyển đổi thành một unsigned char
-                    x: Chỉ định rằng giá trị đọc được là một số hệ thập lục phân.*/
-
-    char *byte = malloc(strlen(string) / 2 + 1);
-    for (int i = 0; i < strlen(string); i += 2)
+    int length = strlen(string);
+    char *byte = malloc(length * 2);
+    char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    int i = 0;
+    int j = 0;
+    while (i < length)
     {
-        sscanf(&string[i], "%2hhx", &byte[i / 2]);
+        byte[j++] = ((strchr(base64_table, string[i]) - base64_table) << 2) | ((i + 1 < length ? strchr(base64_table, string[i + 1]) - base64_table : 0) >> 4);
+        if (string[i + 2] != '=')
+            byte[j++] = ((strchr(base64_table, string[i + 1]) - base64_table) << 4) | ((i + 2 < length ? strchr(base64_table, string[i + 2]) - base64_table : 0) >> 2);
+        if (string[i + 3] != '=')
+            byte[j++] = ((strchr(base64_table, string[i + 2]) - base64_table) << 6) | (i + 3 < length ? strchr(base64_table, string[i + 3]) - base64_table : 0);
+        i += 4;
     }
+    byte[j] = '\0';
     strcpy(string, byte);
 }
 
-void inputPassword(char password[]) // Nhập password
+void inputPassword(char *password) // Nhập password
 {
     int i = 0;
     char get;
@@ -1246,7 +1261,23 @@ void inputPassword(char password[]) // Nhập password
     password[i] = '\0';
 }
 
-void readUsernameAndPasswordFromFile(FILE *f, char username[], char password[]) // Đọc username và password từ file
+bool checkPassword(char *password, char *userInputPass) // Kiểm tra password có đúng hay không
+{
+    decrypt(password);
+    if (strcmp(password, userInputPass) == 0)
+        return true;
+    return false;
+}
+
+bool checkUsername(char *userName, char *usernameInput) // Kiểm tra username có đúng hay không
+{
+    decrypt(userName);
+    if (strcmp(userName, usernameInput) == 0)
+        return true;
+    return false;
+}
+
+void readUsernameAndPasswordFromFile(FILE *f, char *username, char *password) // Đọc username và password từ file
 {
     char get;
     int index = 0;
@@ -1265,7 +1296,7 @@ void readUsernameAndPasswordFromFile(FILE *f, char username[], char password[]) 
     password[index] = '\0';
 }
 
-bool isValidUsername(char username[]) // Kiểm tra username có hợp lệ hay không
+bool isValidUsername(char *username) // Kiểm tra username có hợp lệ hay không
 {
     if (strlen(username) < MIN_USERNAME_LENGTH or strlen(username) > MAX_USERNAME_LENGTH)
     {
@@ -1286,19 +1317,17 @@ bool isValidUsername(char username[]) // Kiểm tra username có hợp lệ hay 
         printf("Không thể mở file\n");
         return false;
     }
-    char user[MAX_USERNAME_LENGTH], pass[MAX_PASSWORD_LENGTH];
-    while (1)
+    char user[MAX_USERNAME_LENGTH * 2], pass[MAX_PASSWORD_LENGTH * 2];
+    while (true)
     {
         if (feof(f))
             break;
 
         readUsernameAndPasswordFromFile(f, user, pass);
 
-        decrypt(user);
-        if (strcmp(user, username) == 0)
+        if (checkUsername(user, username))
         {
             printf("\n⚠️  Username đã tồn tại\n\n");
-            fclose(f);
             return false;
         }
     }
@@ -1306,7 +1335,7 @@ bool isValidUsername(char username[]) // Kiểm tra username có hợp lệ hay 
     return true;
 }
 
-bool isValidPassword(char password[]) // Kiểm tra password có hợp lệ hay không
+bool isValidPassword(char *password) // Kiểm tra password có hợp lệ hay không
 {
     bool hasUppercase = false;
     bool hasLowercase = false;
@@ -1365,8 +1394,8 @@ bool isValidPassword(char password[]) // Kiểm tra password có hợp lệ hay 
 void registerNewAccount() // Đăng kí tài khoản
 {
     system("cls");
-    char username[MAX_USERNAME_LENGTH];
-    char password[MAX_PASSWORD_LENGTH];
+    char username[MAX_USERNAME_LENGTH * 2];
+    char password[MAX_PASSWORD_LENGTH * 2];
     FILE *f = fopen("index.txt", "a");
     printf("\n\t=============== Register Page ===============\n\n");
 
@@ -1394,27 +1423,11 @@ void registerNewAccount() // Đăng kí tài khoản
     loading();
 }
 
-bool checkPassword(char password[], char userInputPass[]) // Kiểm tra password có đúng hay không
-{
-    decrypt(password);
-    if (strcmp(password, userInputPass) == 0)
-        return true;
-    return false;
-}
-
-bool checkUsername(char userName[], char usernameInput[]) // Kiểm tra username có đúng hay không
-{
-    decrypt(userName);
-    if (strcmp(userName, usernameInput) == 0)
-        return true;
-    return false;
-}
-
-bool checkUsernameAndPassword(char inputUsername[], char inputPassword[]) // Đọc từ file và kiểm tra username và password
+bool checkUsernameAndPassword(char *inputUsername, char *inputPassword) // Đọc từ file và kiểm tra username và password
 {
     FILE *f = fopen("index.txt", "r");
-    char username[25];
-    char password[25];
+    char username[MAX_PASSWORD_LENGTH * 2];
+    char password[MAX_PASSWORD_LENGTH * 2];
     while (true)
     {
         if (feof(f))
@@ -1435,8 +1448,8 @@ bool checkUsernameAndPassword(char inputUsername[], char inputPassword[]) // Đ�
 bool login() // Đăng nhập
 {
     system("cls");
-    char username[MAX_USERNAME_LENGTH];
-    char password[MAX_PASSWORD_LENGTH];
+    char username[MAX_USERNAME_LENGTH * 2];
+    char password[MAX_PASSWORD_LENGTH * 2];
     int checkLogin = 0;
     printf("\n\t=============== Login Page ===============\n\n");
     while (true)
@@ -1448,7 +1461,7 @@ bool login() // Đăng nhập
         inputPassword(password);
         if (checkUsernameAndPassword(username, password))
         {
-            printf("\n\n🎉 Chào mừng bạn đã trở lại!");
+            printf("\n\n🎉 Đăng nhập thành công");
             Sleep(555);
             loading();
             system("cls");
