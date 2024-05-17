@@ -5,7 +5,7 @@ int main()
     SetConsoleOutputCP(65001);
     system("cls");
 
-    printf("❓ Bạn đã có tài khoản chưa? (Y/N):");
+    printf("❓ Bạn đã có tài khoản chưa? (Y/N): ");
     char choice;
     scanf(" %c", &choice);
     fflush(stdin);
@@ -23,8 +23,8 @@ int main()
     }
     else
     {
-        printf("❌ Lựa chọn không hợp lệ! Vui lòng chọn lại\n");
-        // main();
+        printf("\n❌ Lựa chọn không hợp lệ!\n\n");
+        system("pause");
     }
     return 0;
 }

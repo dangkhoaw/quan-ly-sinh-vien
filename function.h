@@ -306,19 +306,25 @@ void printClassToFile(STUDENTLIST class, FILE *f)
 {
     if (strcmp(class->std[0]->ID, "") == 0)
     {
-        fprintf(f, "%-11s %-25s %-17s %-16s %s\n", "STT", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
+        fprintf(f, "+-----+-----------------------------+--------------+--------------+---------------+\n");
+        fprintf(f, "| %s |          %s          |   %s  |   %s  |    %s    |\n", "STT", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
+        fprintf(f, "+-----+-----------------------------+--------------+--------------+---------------+\n");
         for (int i = 0; i < class->count; i++)
         {
-            fprintf(f, " %-5d %-29s %-11s %-15s %s\n", i + 1, class->std[i]->fullName, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
+            fprintf(f, "| %-3d | %-28s|     %-8s |  %-11s | %-13s |\n", i + 1, class->std[i]->fullName, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
         }
+        fprintf(f, "+-----+-----------------------------+--------------+--------------+---------------+");
     }
     else if (strcmp(class->std[0]->email, "") == 0)
     {
-        fprintf(f, "%-5s %-23s %-24s %-17s %-16s %s\n", "STT", "Mã sinh viên", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
+        fprintf(f, "+-----+-----------------+-----------------------------+--------------+--------------+---------------+\n");
+        fprintf(f, "| %s |   %s  |          %s          |   %s  |   %s  |    %s    |\n", "STT", "Mã sinh viên", "Họ và tên", "Giới tính", "Ngày sinh", "Địa chỉ");
+        fprintf(f, "+-----+-----------------+-----------------------------+--------------+--------------+---------------+\n");
         for (int i = 0; i < class->count; i++)
         {
-            fprintf(f, " %-5d %-15s %-28s %-11s %-15s %s\n", i + 1, class->std[i]->ID, class->std[i]->fullName, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
+            fprintf(f, "| %-3d |    %-13s| %-28s|     %-8s |  %-11s | %-13s |\n", i + 1, class->std[i]->ID, class->std[i]->fullName, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
         }
+        fprintf(f, "+-----+-----------------+-----------------------------+--------------+--------------+---------------+");
     }
     else
     {
@@ -329,7 +335,7 @@ void printClassToFile(STUDENTLIST class, FILE *f)
         {
             fprintf(f, "| %-3d |    %-13s| %-28s| %-23s |     %-8s |  %-11s | %-13s |\n", i + 1, class->std[i]->ID, class->std[i]->fullName, class->std[i]->email, class->std[i]->gender, class->std[i]->birthDay, class->std[i]->address);
         }
-        fprintf(f, "+-----+-----------------+-----------------------------+-------------------------+--------------+--------------+---------------+\n");
+        fprintf(f, "+-----+-----------------+-----------------------------+-------------------------+--------------+--------------+---------------+");
     }
 }
 
@@ -1222,7 +1228,7 @@ void registerNewAccount()
     system("cls");
     char username[MAX_USERNAME_LENGTH * 2];
     char password[MAX_PASSWORD_LENGTH * 2];
-    FILE *f = fopen("index.txt", "a");
+
     printf("\n\t=============== Register Page ===============\n\n");
 
     printf("\n(Username phải có từ %d đến %d ký tự và không chứa khoảng trắng)", MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
@@ -1234,15 +1240,19 @@ void registerNewAccount()
         fgets(username, sizeof(username), stdin);
         removeEnter(username);
     } while (!isValidUsername(username));
+
     encrypt(username);
-    fprintf(f, "%s:", username);
+
     do
     {
         printf("Password: ");
         inputPassword(password);
     } while (!isValidPassword(password));
+
     encrypt(password);
-    fprintf(f, "%s\n", password);
+
+    FILE *f = fopen("index.txt", "a");
+    fprintf(f, "%s:%s\n", username, password);
     fclose(f);
     printf("\n\n🎉 Đăng kí thành công!");
     Sleep(500);
@@ -1354,7 +1364,7 @@ void runProgram()
             printListStudent();
             break;
         case 8:
-            printf("\n👋  Hẹn gặp lại\n\n");
+            printf("\n👋 Hẹn gặp lại\n\n");
             system("pause");
             break;
         default:
