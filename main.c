@@ -13,17 +13,18 @@ int main()
     if (choice == 'Y' || choice == 'y')
     {
         if (login())
-        {
             runProgram();
-        }
     }
     else if (choice == 'N' || choice == 'n')
     {
         registerNewAccount();
         if (login())
-        {
             runProgram();
-        }
+    }
+    else
+    {
+        printf("\n❌ Invalid choice! Please enter Y or N\n\n");
+        // main();
     }
     return 0;
 }
