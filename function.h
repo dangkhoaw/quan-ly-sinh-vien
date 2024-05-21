@@ -35,7 +35,7 @@ struct StudentList
 {
     int count;
     bool isSorted;
-    bool hasID;
+    bool hasBeenIssuedStudentID; // Đã được cấp mã sinh viên chưa
     STUDENT *std;
 };
 typedef struct StudentList *STUDENTLIST;
@@ -469,9 +469,9 @@ void readStudentInfoFromFile(FILE *f, STUDENTLIST class)
         class->isSorted = false;
 
     if (strcmp(class->std[0]->ID, "") != 0)
-        class->hasID = true;
+        class->hasBeenIssuedStudentID = true;
     else
-        class->hasID = false;
+        class->hasBeenIssuedStudentID = false;
 }
 
 // Xác nhận thoát
@@ -495,7 +495,7 @@ void addStudent()
     do
     {
         printListClassName();
-        printf("\n➡️  Mời bạn nhập vào tên lớp: ");
+        printf("\n➡️  Nhập vào tên lớp: ");
         fgets(className, sizeof(className), stdin);
         removeEnter(className);
         toUpper(className);
@@ -607,7 +607,7 @@ void printListStudent()
     char className[15];
     do
     {
-        printf("\n➡️  Nhập vào tên lớp cần in danh sách: ");
+        printf("\n➡️  Nhập vào tên lớp: ");
         fgets(className, sizeof(className), stdin);
         removeEnter(className);
         toUpper(className);
@@ -624,10 +624,13 @@ void printListStudent()
     STUDENTLIST class = createClass(MAX_SIZE);
     readStudentInfoFromFile(file, class);
     fclose(file);
-    if (class->isSorted == false)
+    if (class->hasBeenIssuedStudentID == false)
     {
-        printf("\n🔔 Lớp chưa được sắp xếp, mời bạn sắp xếp lớp trước\n");
-        return;
+        if (class->isSorted == false)
+        {
+            printf("\n🔔 Lớp %s chưa được sắp xếp\n", className);
+            return;
+        }
     }
     if (class->count == 0)
     {
@@ -664,7 +667,7 @@ void generateID()
     do
     {
         printListClassName();
-        printf("\n➡️  Mời bạn nhập vào tên lớp: ");
+        printf("\n➡️  Nhập vào tên lớp: ");
         fgets(className, sizeof(className), stdin);
         removeEnter(className);
         toUpper(className);
@@ -681,7 +684,7 @@ void generateID()
     STUDENTLIST class = createClass(MAX_SIZE);
     readStudentInfoFromFile(file, class);
     fclose(file);
-    if (class->hasID == false)
+    if (class->hasBeenIssuedStudentID == false)
     {
         if (class->isSorted == false)
         {
@@ -716,7 +719,7 @@ void generateEmail()
     do
     {
         printListClassName();
-        printf("\n➡️  Mời bạn nhập vào tên lớp: ");
+        printf("\n➡️  Nhập vào tên lớp: ");
         fgets(className, sizeof(className), stdin);
         removeEnter(className);
         toUpper(className);
@@ -733,9 +736,26 @@ void generateEmail()
     STUDENTLIST class = createClass(MAX_SIZE);
     readStudentInfoFromFile(file, class);
     fclose(file);
-    if (class->hasID == false)
+
+    int count = 0;
+    if (class->hasBeenIssuedStudentID)
     {
-        printf("\n🔔 Lớp %s chưa được cấp mã sinh viên\n", className);
+        for (int i = 0; i < class->count; i++)
+        {
+            if (strcmp(class->std[i]->ID, "") == 0)
+            {
+                count++;
+            }
+        }
+        if (count)
+        {
+            printf("\n🔔 Lớp %s có %d sinh viên chưa được cấp mã\n", className, count);
+            return;
+        }
+    }
+    else
+    {
+        printf("\n🔔 Lớp chưa được cấp mã sinh viên\n");
         return;
     }
 
@@ -755,7 +775,7 @@ void generateEmail()
 void removeStudent()
 {
     char ID[10];
-    printf("\n➡️  Mời bạn nhập ID: ");
+    printf("\n➡️  Nhập vào ID: ");
     fflush(stdin);
     fgets(ID, sizeof(ID), stdin);
     removeEnter(ID);
@@ -826,7 +846,7 @@ void searchMenu()
 // Tìm kiếm sinh viên theo tên
 void searchStudentByName()
 {
-    printf("\n➡️  Mời nhập tên sinh viên: ");
+    printf("\n➡️  Nhập tên sinh viên: ");
     char name[35];
     fflush(stdin);
     fgets(name, sizeof(name), stdin);
@@ -875,7 +895,7 @@ void searchStudentByName()
 void searchStudentByID() // Tìm kiếm sinh viên theo ID
 {
     char ID[10];
-    printf("\n➡️  Mời bạn nhập ID bạn muốn tìm: ");
+    printf("\n➡️  Nhập vào ID: ");
     fflush(stdin);
     fgets(ID, sizeof(ID), stdin);
     removeEnter(ID);
