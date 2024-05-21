@@ -128,6 +128,26 @@ char *toName(char *string)
     return string;
 }
 
+bool isNumber(char *string)
+{
+    for (int i = 0; i < strlen(string); i++)
+    {
+        if (!isdigit(string[i]))
+            return false;
+    }
+    return true;
+}
+
+bool isString(char *string)
+{
+    for (int i = 0; i < strlen(string); i++)
+    {
+        if (!isalpha(string[i]) && string[i] != ' ')
+            return false;
+    }
+    return true;
+}
+
 //------------------------------------------------------------------------------------------------------------------------
 
 // Tạo danh sách sinh viên
@@ -150,10 +170,19 @@ bool checkFacultyCode()
     {
         return true;
     }
-    printf("\n⚠️ Mã khoa không hợp lệ, mời nhập lại\n");
+    printf("\n🔔 Mã khoa không hợp lệ, mời nhập lại\n");
     return false;
 }
 
+bool checkAcademicYear()
+{
+    if (isNumber(academicYear) && strlen(academicYear) == 2)
+    {
+        return true;
+    }
+    printf("\n🔔 Mã khóa không hợp lệ, mời nhập lại\n");
+    return false;
+}
 // In tên các lớp
 void printListClassName()
 {
@@ -212,15 +241,18 @@ void printFacultyName()
 // Nhập mã khóa và mã khoa
 void inputCode()
 {
-    printf("\n➡️  Mời bạn nhập vào mã khóa: ");
-    scanf("%s", academicYear);
+    do
+    {
+        printf("\n➡️  Mời bạn nhập vào mã khóa: ");
+        scanf("%s", academicYear);
+    } while (!checkAcademicYear());
 
     printFacultyName();
     do
     {
         printf("\n➡️  Mời bạn nhập vào mã khoa: ");
         scanf("%s", facultyCode);
-    } while (checkFacultyCode() == 0);
+    } while (!checkFacultyCode());
 
     system("cls");
 }
@@ -260,7 +292,7 @@ bool checkClassName(char *className)
             }
         }
     }
-    printf("\n ⚠️ Tên lớp không hợp lệ, mời nhập lại\n");
+    printf("\n🔔 Tên lớp không hợp lệ, mời nhập lại\n");
     return false;
 }
 
@@ -579,7 +611,7 @@ void sortStudent()
     FILE *file = fopen(fileName, "r");
     if (file == NULL)
     {
-        printf("\n🔔 Lớp %s chưa tồn tại\n", className);
+        printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
         return;
     }
     STUDENTLIST class = createClass(MAX_SIZE);
@@ -618,7 +650,7 @@ void printListStudent()
     FILE *file = fopen(fileName, "r");
     if (file == NULL)
     {
-        printf("\n🔔 Lớp %s chưa tồn tại\n", className);
+        printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
         return;
     }
     STUDENTLIST class = createClass(MAX_SIZE);
@@ -631,11 +663,6 @@ void printListStudent()
             printf("\n🔔 Lớp %s chưa được sắp xếp\n", className);
             return;
         }
-    }
-    if (class->count == 0)
-    {
-        printf("\n🔔 Lớp %s chưa có sinh viên nào\n", className);
-        return;
     }
 
     sprintf(fileName, "%s-%s-report.txt", facultyCode, className);
@@ -678,7 +705,7 @@ void generateID()
     FILE *file = fopen(fileName, "r");
     if (file == NULL)
     {
-        printf("\n🔔 Lớp %s chưa tồn tại\n", className);
+        printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
         return;
     }
     STUDENTLIST class = createClass(MAX_SIZE);
@@ -730,7 +757,7 @@ void generateEmail()
     FILE *file = fopen(fileName, "r");
     if (file == NULL)
     {
-        printf("\n🔔 Lớp %s chưa tồn tại\n", className);
+        printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
         return;
     }
     STUDENTLIST class = createClass(MAX_SIZE);
@@ -829,30 +856,10 @@ void removeStudent()
     fclose(f);
 }
 
-// Menu tìm kiếm
-void searchMenu()
-{
-    printf("     _____                                        _____  \n");
-    printf("    ( ___ )--------------------------------------( ___ ) \n");
-    printf("     |   |                                        |   |  \n");
-    printf("     |   |      1. Tìm kiếm theo tên              |   |  \n");
-    printf("     |   |      2. Tìm kiếm theo mã sinh viên     |   |  \n");
-    printf("     |   |      3. Thoát                          |   |  \n");
-    printf("     |___|                                        |___|  \n");
-    printf("    (_____)--------------------------------------(_____) \n\n");
-    printf("\n➡️  Mời bạn chọn: ");
-}
-
 // Tìm kiếm sinh viên theo tên
-void searchStudentByName()
+void searchStudentByName(char *name)
 {
-    printf("\n➡️  Nhập tên sinh viên: ");
-    char name[35];
-    fflush(stdin);
-    fgets(name, sizeof(name), stdin);
-    removeEnter(name);
     toName(name);
-
     bool found = false;
 
     FILE *f = fopen("class.txt", "r");
@@ -892,14 +899,8 @@ void searchStudentByName()
 }
 
 // Tìm kiếm sinh viên
-void searchStudentByID() // Tìm kiếm sinh viên theo ID
+void searchStudentByID(char *ID) // Tìm kiếm sinh viên theo ID
 {
-    char ID[10];
-    printf("\n➡️  Nhập vào ID: ");
-    fflush(stdin);
-    fgets(ID, sizeof(ID), stdin);
-    removeEnter(ID);
-
     bool found = false;
 
     FILE *f = fopen("class.txt", "r");
@@ -937,24 +938,16 @@ void searchStudentByID() // Tìm kiếm sinh viên theo ID
 // Tìm kiếm sinh viên
 void searchStudent()
 {
-    searchMenu();
-    char choice;
-    scanf(" %c", &choice);
-    switch (choice)
-    {
-    case '1':
-        searchStudentByName();
-        break;
-    case '2':
-        searchStudentByID();
-        break;
-    case '3':
-        return;
-    default:
-        printf("\n⚠️  Vui lòng chọn từ 1 đến 3\n");
-        searchStudent();
-        break;
-    }
+    printf("\n➡️  Nhập vào tên hoặc mã sinh viên: ");
+    char search[40];
+    fgets(search, sizeof(search), stdin);
+    removeEnter(search);
+    if (isNumber(search))
+        searchStudentByID(search);
+    else if (isString(search))
+        searchStudentByName(search);
+    else
+        printf("\n❌  Thông tin không hợp lệ\n");
 }
 
 // Menu chính
@@ -1100,14 +1093,14 @@ bool isValidUsername(char *usernameInput)
     int usernameLength = strlen(usernameInput);
     if (usernameLength < MIN_USERNAME_LENGTH || usernameLength > MAX_USERNAME_LENGTH)
     {
-        printf("\n⚠️  Username phải có từ %d đến %d ký tự\n\n", MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
+        printf("\n🔔 Username phải có từ %d đến %d ký tự\n\n", MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
         return false;
     }
     for (int i = 0; i < usernameLength; i++)
     {
         if (usernameInput[i] == ' ')
         {
-            printf("\n⚠️  Username không được chứa khoảng trắng\n\n");
+            printf("\n🔔 Username không được chứa khoảng trắng\n\n");
             return false;
         }
     }
@@ -1130,7 +1123,7 @@ bool isValidUsername(char *usernameInput)
 
             if (checkUsername(username, usernameInput))
             {
-                printf("\n⚠️  Username đã tồn tại\n\n");
+                printf("\n🔔 Username đã tồn tại\n\n");
                 return false;
             }
         }
@@ -1151,7 +1144,7 @@ bool isValidPassword(char *password)
 
     if (passwordLength < MIN_PASSWORD_LENGTH || passwordLength > MAX_PASSWORD_LENGTH)
     {
-        printf("\n\n⚠️  Password phải có ít nhất %d ký tự\n\n", MIN_PASSWORD_LENGTH);
+        printf("\n\n🔔 Password phải có ít nhất %d ký tự\n\n", MIN_PASSWORD_LENGTH);
         return false;
     }
 
@@ -1177,25 +1170,24 @@ bool isValidPassword(char *password)
 
     if (!hasUppercase)
     {
-        printf("\n\n⚠️  Password phải chứa ít nhất 1 ký tự in hoa\n\n");
+        printf("\n\n🔔 Password phải chứa ít nhất 1 ký tự in hoa\n\n");
         return false;
     }
     if (!hasLowercase)
     {
-        printf("\n\n⚠️  Password phải chứa ít nhất 1 ký tự thường\n\n");
+        printf("\n\n🔔 Password phải chứa ít nhất 1 ký tự thường\n\n");
         return false;
     }
     if (!hasNumber)
     {
-        printf("\n\n⚠️  Password phải chứa ít nhất 1 số\n\n");
+        printf("\n\n🔔 Password phải chứa ít nhất 1 số\n\n");
         return false;
     }
     if (hasSpace)
     {
-        printf("\n\n⚠️  Password không được chứa khoảng trắng\n\n");
+        printf("\n\n🔔 Password không được chứa khoảng trắng\n\n");
         return false;
     }
-
     return true;
 }
 
@@ -1296,7 +1288,7 @@ bool login()
         {
             checkLogin++;
             if (checkLogin < 5)
-                printf("\n\n⚠️  Sai Username hoặc Password. Hãy thử lại!\n\n");
+                printf("\n\n🔔 Sai Username hoặc Password. Hãy thử lại!\n\n");
             else
             {
                 printf("\n\n❌  Đăng nhập thất bại. Hãy thử lại sau!\n\n");
@@ -1321,6 +1313,7 @@ void printBanner()
     printf("      ███████║██║██║ ╚████║██║  ██║     ╚████╔╝ ██║███████╗██║ ╚████║ \n");
     printf("      ╚══════╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝      ╚═══╝  ╚═╝╚══════╝╚═╝  ╚═══╝ \n\n");
 }
+
 // Chương trình chính
 void runProgram()
 {
@@ -1357,11 +1350,10 @@ void runProgram()
             break;
         case 8:
             printf("\n👋 Hẹn gặp lại\n\n");
-            system("pause");
-            exit(1);
+            exit(1); // Thoát chương trình
             break;
         default:
-            printf("\n⚠️  Vui lòng chọn từ 1 đến 8\n");
+            printf("\n❌  Vui lòng chọn từ 1 đến 8\n");
             break;
         }
     } while (choice != 8);
@@ -1420,11 +1412,10 @@ void runAdmin()
             break;
         case 3:
             printf("\n👋 Hẹn gặp lại\n\n");
-            system("pause");
             break;
         default:
             system("cls");
-            printf("\n⚠️  Vui lòng chọn từ 1 đến 3\n");
+            printf("\n❌  Vui lòng chọn từ 1 đến 3\n");
             break;
         }
     } while (choice != 3);
