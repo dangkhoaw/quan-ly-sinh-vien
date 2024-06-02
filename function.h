@@ -35,7 +35,7 @@ struct StudentList
 {
     int count;
     bool isSorted;
-    bool hasBeenIssuedStudentID; // Đã được cấp mã sinh viên chưa
+    bool hasBeenIssuedStudentID; // Đã từng được cấp mã sinh viên chưa
     STUDENT *std;
 };
 typedef struct StudentList *STUDENTLIST;
@@ -43,7 +43,7 @@ typedef struct StudentList *STUDENTLIST;
 typedef struct
 {
     char *facultyCode;
-    char *className[15];
+    char *className[9];
     int numClass;
 } Faculty;
 
@@ -609,6 +609,13 @@ void quickSort(STUDENTLIST Class, int start, int end)
 // Sắp xếp sinh viên
 void sortStudent()
 {
+    FILE *file = fopen("class.txt", "r");
+    if (file == NULL)
+    {
+        printf("\n🔔 Chưa có lớp nào\n");
+        return;
+    }
+    fclose(file);
     printListClassName();
     char className[15];
     do
@@ -621,7 +628,7 @@ void sortStudent()
 
     char fileName[50];
     sprintf(fileName, "%s-%s.txt", facultyCode, className);
-    FILE *file = fopen(fileName, "r");
+    file = fopen(fileName, "r");
     if (file == NULL)
     {
         printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
@@ -652,6 +659,13 @@ void sortStudent()
 // In danh sách sinh viên
 void printListStudent()
 {
+    FILE *file = fopen("class.txt", "r");
+    if (file == NULL)
+    {
+        printf("\n🔔 Chưa có lớp nào\n");
+        return;
+    }
+    fclose(file);
     printListClassName();
     char className[15];
     do
@@ -664,7 +678,7 @@ void printListStudent()
 
     char fileName[50];
     sprintf(fileName, "%s-%s.txt", facultyCode, className);
-    FILE *file = fopen(fileName, "r");
+    file = fopen(fileName, "r");
     if (file == NULL)
     {
         printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
@@ -699,18 +713,25 @@ void printListStudent()
 // Cấp mã sinh viên
 void generateID()
 {
+    FILE *file = fopen("class.txt", "r");
+    if (file == NULL)
+    {
+        printf("\n🔔 Chưa có lớp nào\n");
+        return;
+    }
+    fclose(file);
     int numStudentHasID;
     char fileID[20];
-    sprintf(fileID, ".id_%s_%s.txt", facultyCode, academicYear);
-    FILE *f = fopen(fileID, "r");
-    if (f == NULL)
+    sprintf(fileID, "id_%s_%s.txt", facultyCode, academicYear);
+    file = fopen(fileID, "r");
+    if (file == NULL)
     {
-        f = fopen(fileID, "w+");
-        fprintf(f, "0");
-        rewind(f);
+        file = fopen(fileID, "w+");
+        fprintf(file, "0");
+        rewind(file);
     }
-    fscanf(f, "%d", &numStudentHasID);
-    fclose(f);
+    fscanf(file, "%d", &numStudentHasID);
+    fclose(file);
 
     char className[15];
     do
@@ -724,7 +745,7 @@ void generateID()
 
     char fileName[30];
     sprintf(fileName, "%s-%s.txt", facultyCode, className);
-    FILE *file = fopen(fileName, "r");
+    file = fopen(fileName, "r");
     if (file == NULL)
     {
         printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
@@ -754,9 +775,9 @@ void generateID()
             sprintf(class->std[i]->ID, "%s%s%04d", facultyCode, academicYear, ++numStudentHasID);
         }
     }
-    f = fopen(fileID, "w");
-    fprintf(f, "%d", numStudentHasID);
-    fclose(f);
+    file = fopen(fileID, "w");
+    fprintf(file, "%d", numStudentHasID);
+    fclose(file);
     file = fopen(fileName, "w");
     for (int i = 0; i < class->count; i++)
     {
@@ -769,6 +790,13 @@ void generateID()
 // Cấp email
 void generateEmail()
 {
+    FILE *file = fopen("class.txt", "r");
+    if (file == NULL)
+    {
+        printf("\n🔔 Chưa có lớp nào\n");
+        return;
+    }
+    fclose(file);
     char className[15];
     do
     {
@@ -781,7 +809,7 @@ void generateEmail()
 
     char fileName[30];
     sprintf(fileName, "%s-%s.txt", facultyCode, className);
-    FILE *file = fopen(fileName, "r");
+    file = fopen(fileName, "r");
     if (file == NULL)
     {
         printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
@@ -833,6 +861,12 @@ void generateEmail()
 // Xóa sinh viên
 void removeStudent()
 {
+    FILE *file = fopen("class.txt", "r");
+    if (file == NULL)
+    {
+        printf("\n🔔 Chưa có lớp nào\n");
+        return;
+    }
     char ID[10];
     printf("\n➡️  Nhập vào mã sinh viên: ");
     fflush(stdin);
@@ -840,17 +874,17 @@ void removeStudent()
     removeEnter(ID);
 
     int found = 0;
-    FILE *f = fopen("class.txt", "r");
+
     char fileClass[50];
-    while (fgets(fileClass, sizeof(fileClass), f))
+    while (fgets(fileClass, sizeof(fileClass), file))
     {
         removeEnter(fileClass);
-        FILE *fileCheck = fopen(fileClass, "r");
-        if (fileCheck != NULL)
+        FILE *f = fopen(fileClass, "r");
+        if (f != NULL)
         {
             STUDENTLIST class = createClass();
-            readStudentInfoFromFile(fileCheck, class);
-            fclose(fileCheck);
+            readStudentInfoFromFile(f, class);
+            fclose(f);
             for (int i = 0; i < class->count; i++)
             {
                 if (strcmp(class->std[i]->ID, ID) == 0)
@@ -867,42 +901,43 @@ void removeStudent()
                         }
                         class->count--;
                         printf("\n🎉 Đã xóa sinh viên có ID %s\n", ID);
-                        FILE *f = fopen(fileClass, "w");
+                        f = fopen(fileClass, "w");
                         for (int k = 0; k < class->count; k++)
                         {
                             printNewStudentToFile(f, class->std[k]);
                         }
                         fclose(f);
+                        fclose(file);
                         return;
                     }
                     else
+                    {
+                        fclose(file);
                         return;
+                    }
                 }
             }
         }
-        else
-            fclose(fileCheck);
     }
     if (!found)
         printf("\n🔔 Không tìm thấy sinh viên có ID %s\n", ID);
-    fclose(f);
+    fclose(file);
 }
 
 void find(char *search, char *status)
 {
+    FILE *file = fopen("class.txt", "r");
     bool found = false;
-
-    FILE *f = fopen("class.txt", "r");
     char fileClass[50];
-    while (fgets(fileClass, sizeof(fileClass), f))
+    while (fgets(fileClass, sizeof(fileClass), file))
     {
         removeEnter(fileClass);
-        FILE *fileCheck = fopen(fileClass, "r");
-        if (fileCheck != NULL)
+        FILE *f = fopen(fileClass, "r");
+        if (f != NULL)
         {
             STUDENTLIST class = createClass();
-            readStudentInfoFromFile(fileCheck, class);
-            fclose(fileCheck);
+            readStudentInfoFromFile(f, class);
+            fclose(f);
             for (int i = 0; i < class->count; i++)
             {
                 bool check = strcmp(status, "ID") == 0 ? strcmp(class->std[i]->ID, search) == 0 : strstr(class->std[i]->fullName, search) != NULL;
@@ -920,7 +955,7 @@ void find(char *search, char *status)
                     if (strcmp(status, "ID") == 0)
                     {
                         printf("+-----------------+-----------------------------+--------------+--------------+---------------+\n");
-                        fclose(f);
+                        fclose(file);
                         return;
                     }
                 }
@@ -932,21 +967,28 @@ void find(char *search, char *status)
         printf("\n🔔 Không tìm thấy sinh viên\n");
     else
         printf("+-----------------+-----------------------------+--------------+--------------+---------------+\n");
-    fclose(f);
+    fclose(file);
 }
 
 // Tìm kiếm sinh viên
 void searchStudent()
 {
+    FILE *file = fopen("class.txt", "r");
+    if (file == NULL)
+    {
+        printf("\n🔔 Chưa có lớp nào\n");
+        return;
+    }
+    fclose(file);
     printf("\n➡️  Nhập vào tên hoặc mã sinh viên: ");
-    char search[40], *status;
+    char search[40], status[5];
     fgets(search, sizeof(search), stdin);
     removeEnter(search);
     if (isNumber(search))
-        status = "ID";
+        strcpy(status, "ID");
     else if (isString(search))
     {
-        status = "Name";
+        strcpy(status, "Name");
         toName(search);
     }
     else
@@ -1040,7 +1082,7 @@ void inputPassword(char *password)
 {
     int i = 0;
 
-    while (i < MAX_PASSWORD_LENGTH)
+    while (true)
     {
         char get = getch();
         if (get == '\r' || get == '\n')
@@ -1067,17 +1109,13 @@ void inputPassword(char *password)
 // Kiểm tra password có đúng hay không
 bool checkPassword(char *password, char *userInputPass)
 {
-    if (strcmp(password, userInputPass) == 0)
-        return true;
-    return false;
+    return strcmp(password, userInputPass) == 0;
 }
 
 // Kiểm tra username có trùng/đúng hay không
 bool checkUsername(char *userName, char *usernameInput)
 {
-    if (strcmp(userName, usernameInput) == 0)
-        return true;
-    return false;
+    return strcmp(userName, usernameInput) == 0;
 }
 
 // Đọc username và password từ file
@@ -1111,7 +1149,7 @@ bool isValidUsername(char *usernameInput)
             return false;
         }
     }
-    FILE *f = fopen("user.txt", "r");
+    FILE *f = fopen("user.txt", "a+");
     if (f == NULL)
     {
         printf("Không thể mở file\n");
@@ -1357,7 +1395,7 @@ void runProgram()
             break;
         case 8:
             printf("\n👋 Hẹn gặp lại\n\n");
-            exit(1); // Thoát chương trình
+            exit(0); // Thoát chương trình
             break;
         default:
             printf("\n❌  Vui lòng chọn từ 1 đến 8\n");
@@ -1419,7 +1457,7 @@ void runAdmin()
             if (login())
                 runProgram();
             else
-                exit(1);
+                exit(0);
             break;
         case 3:
             printf("\n👋 Hẹn gặp lại\n\n");
