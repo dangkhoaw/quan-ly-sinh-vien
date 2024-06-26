@@ -4,6 +4,6 @@ int main()
 {
     SetConsoleOutputCP(65001);
     system("cls");
-    runAdmin();
+    loginAndRegister();
     return 0;
 }

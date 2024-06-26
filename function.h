@@ -560,7 +560,6 @@ void addStudent()
     }
     else
     {
-        fclose(fileCheck);
         fileCheck = fopen(fileName, "a");
     }
     while (true)
@@ -640,6 +639,7 @@ void sortStudent()
     if (class->count == 0)
     {
         printf("\n🔔 Lớp %s chưa có sinh viên\n", className);
+        return;
     }
     if (class->isSorted)
     {
@@ -1046,10 +1046,10 @@ void encode(char *string)
     int j = 0;
     while (i < length)
     {
-        base64[j++] = base64_table[(string[i] & 0xFC) >> 2];                                                                                   // 0xFC = 11111100 = 252 lấy ra 6 bit đầu
-        base64[j++] = base64_table[((string[i] & 0x03) << 4) | ((i + 1 < length ? string[i + 1] & 0xF0 : 0) >> 4)];                            // 0x03 = 00000011 = 3 lấy ra 2 bit cuối | 0xF0 = 11110000 = 240 lấy ra 4 bit đầu
-        base64[j++] = i + 1 < length ? base64_table[((string[i + 1] & 0x0F) << 2) | ((i + 2 < length ? string[i + 2] & 0xC0 : 0) >> 6)] : '='; // 0x0F = 00001111 = 15 lấy ra 4 bit cuối | 0xC0 = 11000000 = 192 lấy ra 2 bit đầu
-        base64[j++] = i + 2 < length ? base64_table[string[i + 2] & 0x3F] : '=';                                                               // 0x3F = 00111111 = 63 lấy ra 6 bit cuối
+        base64[j++] = base64_table[(string[i] & 0b11111100) >> 2];
+        base64[j++] = base64_table[((string[i] & 0b00000011) << 4) | ((i + 1 < length ? string[i + 1] & 0b11110000 : 0) >> 4)];
+        base64[j++] = i + 1 < length ? base64_table[((string[i + 1] & 0b00001111) << 2) | ((i + 2 < length ? string[i + 2] & 0b11000000 : 0) >> 6)] : '=';
+        base64[j++] = i + 2 < length ? base64_table[string[i + 2] & 0b00111111] : '=';
         i += 3;
     }
     base64[j] = '\0';
@@ -1405,7 +1405,7 @@ void runProgram()
 }
 
 // Menu admin
-void adminMenu()
+void menuLoginAndRegister()
 {
     printf("\n");
     printf("                     ,---.           ,---.\n");
@@ -1439,12 +1439,12 @@ void adminMenu()
 }
 
 // Chạy chương trình admin
-void runAdmin()
+void loginAndRegister()
 {
     int choice;
     do
     {
-        adminMenu();
+        menuLoginAndRegister();
         scanf("%d", &choice);
         fflush(stdin);
         switch (choice)
