@@ -22,17 +22,13 @@
 
 ## 📋 Note
 
-- Chức năng Cấp Mã sinh viên chương trình tự động cấp sau khi sắp xếp danh sách theo thứ tự Alphabe. Nếu chưa sắp xếp chương trình sẽ thông báo sắp xếp trước.
-
-- Chức năng địa chỉ email chương trình tự động cấp sau khi cấp Mã sinh viên. Nếu chưa cấp mã chương trình sẽ thông báo cấp mã trước.
-
 - FILE: `function.h` chứa các hàm xử lý chính của chương trình.
 
 - FILE: `main.c` chứa hàm main.
 
 - Để sử dụng chương trình, hãy chạy file `main.c`.
 
-## 🧑🏻‍💻 Member of the project
+## 🧑🏻‍💻 Members of the project
 
 - [Đặng Đăng Khoa](https://www.facebook.com/khoaw.dang/)
 - [Trần Nguyễn Văn Phát](https://www.facebook.com/profile.php?id=100043746661303)
