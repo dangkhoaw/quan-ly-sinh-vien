@@ -20,6 +20,8 @@
 
 - Thoát.
 
+#### Chương trình được xây dựng dựa trên cách quản lý sinh viên của Đại học Bách Khoa Đà Nẵng.
+
 ## 📋 Note
 
 - FILE: `function.h` chứa các hàm xử lý chính của chương trình.
