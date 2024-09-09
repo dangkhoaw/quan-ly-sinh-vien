@@ -32,5 +32,5 @@
 
 ## 🧑🏻‍💻 Members of the project
 
-- [Đặng Đăng Khoa](https://www.facebook.com/khoaw.dang/)
-- [Trần Nguyễn Văn Phát](https://www.facebook.com/profile.php?id=100043746661303)
+- [Đặng Đăng Khoa](https://github.com/dangkhoaw)
+- [Trần Nguyễn Văn Phát](https://github.com/grayzy2617)

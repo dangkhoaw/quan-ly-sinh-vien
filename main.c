@@ -7,5 +7,3 @@ int main()
     loginAndRegister();
     return 0;
 }
-
-// phat
